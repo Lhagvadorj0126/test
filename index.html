@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAGGER CS2 | Монголын Шилдэг Counter-Strike 2 Сервер Сүлжээ</title>
+    <meta name="description" content="LAGGER CS2 - Монголын хамгийн өндөр үзүүлэлттэй, бага лагтай 5v5 Matchmaking, Retake, Deathmatch болон Surf серверүүд. VIP статус, тэмцээн, чансааны системтэй.">
+    
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <!-- Header / Navigation Bar -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="#" class="brand-logo">
+                <span class="logo-badge">CS2</span>
+                <span class="brand-name">LAGGER<span class="orange-text">.MN</span></span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#hero" class="active">Нүүр</a></li>
+                <li><a href="#servers">Серверүүд</a></li>
+                <li><a href="#vip">VIP Стор</a></li>
+                <li><a href="#leaderboard">Чансаа</a></li>
+                <li><a href="#rules">Дүрэм</a></li>
+            </ul>
+            <div class="nav-cta">
+                <a href="https://discord.gg" target="_blank" class="btn-primary">
+                    <i class="fab fa-discord"></i> Discord-д Нэгдэх
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="hero" class="hero">
+        <div class="container hero-content">
+            <div class="hero-pill">
+                <span class="pulse-dot"></span>
+                <span>Монголын 128 Tick High-Performance CS2 Серверүүд</span>
+            </div>
+            <h1 class="hero-title">
+                <span class="gradient-text">LAGGER CS2</span> COMMUNITY
+            </h1>
+            <p class="hero-subtitle">
+                Хамгийн бага pings, 128 tick сервер, чанартай anti-cheat болон сонирхолтой тэмцээнүүдээр дүүрэн Монголын CS2 тоглоомчдын нэгдсэн төв.
+            </p>
+
+            <div class="hero-cta-group">
+                <a href="#servers" class="btn-primary">
+                    <i class="fas fa-gamepad"></i> Сервер Таних
+                </a>
+                <a href="#vip" class="btn-outline">
+                    <i class="fas fa-crown" style="color: var(--gold-accent);"></i> VIP Багцууд
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-online-players">218</div>
+                    <div class="stat-label">Одоо Тоглож Буй</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Ажиллаж Буй Сервер</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">Uptime Үзүүлэлт</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">128</div>
+                    <div class="stat-label">Tickrate Систем</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Server Status Section -->
+    <section id="servers" class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">LIVE SERVERS</span>
+                <h2 class="section-title">Серверүүдийн Жагсаалт</h2>
+                <p class="section-desc">Тоглохыг хүссэн горимоо сонгон IP хаягийг нэг даралтаар хуулан тоглоомдоо шууд холбогдоно уу.</p>
+            </div>
+
+            <!-- Server Filter Tabs -->
+            <div class="server-filters">
+                <button class="filter-btn active" data-filter="all">Бүх Сервер</button>
+                <button class="filter-btn" data-filter="comp">5v5 Competitive</button>
+                <button class="filter-btn" data-filter="retake">Retake Mode</button>
+                <button class="filter-btn" data-filter="dm">Deathmatch</button>
+                <button class="filter-btn" data-filter="surf">Surf & Fun</button>
+            </div>
+
+            <!-- Server Cards Grid -->
+            <div class="server-grid">
+
+                <!-- Card 1: 5v5 Comp #1 -->
+                <div class="server-card" data-category="comp">
+                    <div class="server-thumb">
+                        <img src="assets/images/map_dust2.jpg" alt="Dust2 Map">
+                        <span class="server-badge">5v5 MATCHMAKING</span>
+                        <span class="ping-badge"><i class="fas fa-wifi"></i> 12 ms</span>
+                    </div>
+                    <div class="server-body">
+                        <h3 class="server-name">LAGGER #1 [5v5 Competitive]</h3>
+                        <div class="server-map-info">
+                            <span><i class="fas fa-map"></i> de_dust2</span>
+                            <span><i class="fas fa-shield-alt"></i> VAC + AntiCheat</span>
+                        </div>
+                        
+                        <div class="player-bar-container">
+                            <div class="player-count-flex">
+                                <span>Онлайн Тоглогчид</span>
+                                <span><strong class="live-player-count" data-max="10">9</strong> / 10</span>
+                            </div>
+                            <div class="player-bar">
+                                <div class="player-bar-fill" style="width: 90%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="server-actions">
+                            <div class="ip-box" data-ip="cs2.lagger.mn:27015">
+                                <span>cs2.lagger.mn:27015</span>
+                                <i class="fas fa-copy copy-icon"></i>
+                            </div>
+                            <a href="steam://connect/cs2.lagger.mn:27015" class="btn-primary" style="padding: 0.6rem 1rem;">
+                                <i class="fas fa-play"></i> Join
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: 5v5 Comp #2 -->
+                <div class="server-card" data-category="comp">
+                    <div class="server-thumb">
+                        <img src="assets/images/map_mirage.jpg" alt="Mirage Map">
+                        <span class="server-badge">5v5 MATCHMAKING</span>
+                        <span class="ping-badge"><i class="fas fa-wifi"></i> 14 ms</span>
+                    </div>
+                    <div class="server-body">
+                        <h3 class="server-name">LAGGER #2 [Mirage Only 5v5]</h3>
+                        <div class="server-map-info">
+                            <span><i class="fas fa-map"></i> de_mirage</span>
+                            <span><i class="fas fa-fire"></i> Active ELO</span>
+                        </div>
+                        
+                        <div class="player-bar-container">
+                            <div class="player-count-flex">
+                                <span>Онлайн Тоглогчид</span>
+                                <span><strong class="live-player-count" data-max="10">10</strong> / 10</span>
+                            </div>
+                            <div class="player-bar">
+                                <div class="player-bar-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="server-actions">
+                            <div class="ip-box" data-ip="cs2.lagger.mn:27016">
+                                <span>cs2.lagger.mn:27016</span>
+                                <i class="fas fa-copy copy-icon"></i>
+                            </div>
+                            <a href="steam://connect/cs2.lagger.mn:27016" class="btn-primary" style="padding: 0.6rem 1rem;">
+                                <i class="fas fa-play"></i> Join
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Retake -->
+                <div class="server-card" data-category="retake">
+                    <div class="server-thumb">
+                        <img src="assets/images/map_dust2.jpg" alt="Retake Map">
+                        <span class="server-badge" style="background: rgba(59, 130, 246, 0.8);">RETAKE 128TICK</span>
+                        <span class="ping-badge"><i class="fas fa-wifi"></i> 15 ms</span>
+                    </div>
+                    <div class="server-body">
+                        <h3 class="server-name">LAGGER #3 [Instant Retake]</h3>
+                        <div class="server-map-info">
+                            <span><i class="fas fa-map"></i> Active Duty Pool</span>
+                            <span><i class="fas fa-bolt"></i> Fast Respawn</span>
+                        </div>
+                        
+                        <div class="player-bar-container">
+                            <div class="player-count-flex">
+                                <span>Онлайн Тоглогчид</span>
+                                <span><strong class="live-player-count" data-max="9">7</strong> / 9</span>
+                            </div>
+                            <div class="player-bar">
+                                <div class="player-bar-fill" style="width: 77%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="server-actions">
+                            <div class="ip-box" data-ip="cs2.lagger.mn:27017">
+                                <span>cs2.lagger.mn:27017</span>
+                                <i class="fas fa-copy copy-icon"></i>
+                            </div>
+                            <a href="steam://connect/cs2.lagger.mn:27017" class="btn-primary" style="padding: 0.6rem 1rem;">
+                                <i class="fas fa-play"></i> Join
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Deathmatch FFA -->
+                <div class="server-card" data-category="dm">
+                    <div class="server-thumb">
+                        <img src="assets/images/map_mirage.jpg" alt="DM Map">
+                        <span class="server-badge" style="background: rgba(239, 68, 68, 0.8);">WARMUP FFA DM</span>
+                        <span class="ping-badge"><i class="fas fa-wifi"></i> 10 ms</span>
+                    </div>
+                    <div class="server-body">
+                        <h3 class="server-name">LAGGER #4 [FFA Deathmatch]</h3>
+                        <div class="server-map-info">
+                            <span><i class="fas fa-map"></i> de_mirage</span>
+                            <span><i class="fas fa-crosshair"></i> HS Only / Multi-weapon</span>
+                        </div>
+                        
+                        <div class="player-bar-container">
+                            <div class="player-count-flex">
+                                <span>Онлайн Тоглогчид</span>
+                                <span><strong class="live-player-count" data-max="18">16</strong> / 18</span>
+                            </div>
+                            <div class="player-bar">
+                                <div class="player-bar-fill" style="width: 88%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="server-actions">
+                            <div class="ip-box" data-ip="cs2.lagger.mn:27018">
+                                <span>cs2.lagger.mn:27018</span>
+                                <i class="fas fa-copy copy-icon"></i>
+                            </div>
+                            <a href="steam://connect/cs2.lagger.mn:27018" class="btn-primary" style="padding: 0.6rem 1rem;">
+                                <i class="fas fa-play"></i> Join
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 5: Surf Utopia -->
+                <div class="server-card" data-category="surf">
+                    <div class="server-thumb">
+                        <img src="assets/images/map_surf.jpg" alt="Surf Map">
+                        <span class="server-badge" style="background: rgba(139, 92, 246, 0.8);">SURF & BHOP</span>
+                        <span class="ping-badge"><i class="fas fa-wifi"></i> 18 ms</span>
+                    </div>
+                    <div class="server-body">
+                        <h3 class="server-name">LAGGER #5 [Surf Easy & Timer]</h3>
+                        <div class="server-map-info">
+                            <span><i class="fas fa-map"></i> surf_utopia_v3</span>
+                            <span><i class="fas fa-stopwatch"></i> CKTimer Rankings</span>
+                        </div>
+                        
+                        <div class="player-bar-container">
+                            <div class="player-count-flex">
+                                <span>Онлайн Тоглогчид</span>
+                                <span><strong class="live-player-count" data-max="20">14</strong> / 20</span>
+                            </div>
+                            <div class="player-bar">
+                                <div class="player-bar-fill" style="width: 70%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="server-actions">
+                            <div class="ip-box" data-ip="cs2.lagger.mn:27019">
+                                <span>cs2.lagger.mn:27019</span>
+                                <i class="fas fa-copy copy-icon"></i>
+                            </div>
+                            <a href="steam://connect/cs2.lagger.mn:27019" class="btn-primary" style="padding: 0.6rem 1rem;">
+                                <i class="fas fa-play"></i> Join
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- VIP Store Section -->
+    <section id="vip" class="section store-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">VIP PERKS & STORE</span>
+                <h2 class="section-title">VIP Багцууд ба Боломжууд</h2>
+                <p class="section-desc">Серверт давуу эрх эдлэн тусгай арьс skin (`!ws`), хутга (`!knife`), reserved slot болон бусад олон бэлгийг аваарай.</p>
+            </div>
+
+            <div class="vip-grid">
+                
+                <!-- Bronze VIP -->
+                <div class="vip-card">
+                    <div>
+                        <h3 class="vip-name" style="color: #CD7F32;">BRONZE VIP</h3>
+                        <div class="vip-price">10,000₮ <span>/ сар</span></div>
+                        <ul class="vip-features">
+                            <li><i class="fas fa-check"></i> Reserved Slot (Дүүрсэн үед орох)</li>
+                            <li><i class="fas fa-check"></i> `!ws` Custom Weapon Skins access</li>
+                            <li><i class="fas fa-check"></i> VIP Prefix чат дээр</li>
+                            <li><i class="fas fa-check"></i> +5% Extra XP болон ELO</li>
+                        </ul>
+                    </div>
+                    <button class="btn-outline" onclick="openVipModal('Bronze', '10,000₮')">Авах</button>
+                </div>
+
+                <!-- Silver VIP -->
+                <div class="vip-card">
+                    <div>
+                        <h3 class="vip-name" style="color: #C0C0C0;">SILVER VIP</h3>
+                        <div class="vip-price">20,000₮ <span>/ сар</span></div>
+                        <ul class="vip-features">
+                            <li><i class="fas fa-check"></i> Bronze VIP-ийн бүх боломж</li>
+                            <li><i class="fas fa-check"></i> `!knife` Бүх хутга сонгох</li>
+                            <li><i class="fas fa-check"></i> `!gloves` Custom бээлий</li>
+                            <li><i class="fas fa-check"></i> Join Notification онцгой мэдээлэл</li>
+                            <li><i class="fas fa-check"></i> +10% Extra XP</li>
+                        </ul>
+                    </div>
+                    <button class="btn-outline" onclick="openVipModal('Silver', '20,000₮')">Авах</button>
+                </div>
+
+                <!-- Gold VIP (Featured) -->
+                <div class="vip-card featured">
+                    <span class="popular-badge">ХАМГИЙН ЭРЭЛТТЭЙ</span>
+                    <div>
+                        <h3 class="vip-name" style="color: var(--gold-accent);">GOLD VIP</h3>
+                        <div class="vip-price">35,000₮ <span>/ сар</span></div>
+                        <ul class="vip-features">
+                            <li><i class="fas fa-check"></i> Silver VIP-ийн бүх боломж</li>
+                            <li><i class="fas fa-check"></i> Custom Agent Skins (Тусгай дүрүүд)</li>
+                            <li><i class="fas fa-check"></i> Animated Neon Chat Tag</li>
+                            <li><i class="fas fa-check"></i> Vote Kick & Mute халдашгүй эрх</li>
+                            <li><i class="fas fa-check"></i> Discord-д VIP Special Role</li>
+                        </ul>
+                    </div>
+                    <button class="btn-primary" onclick="openVipModal('Gold', '35,000₮')">Авах</button>
+                </div>
+
+                <!-- Platinum VIP -->
+                <div class="vip-card">
+                    <div>
+                        <h3 class="vip-name" style="color: #E5E4E2;">PLATINUM VIP</h3>
+                        <div class="vip-price">60,000₮ <span>/ сар</span></div>
+                        <ul class="vip-features">
+                            <li><i class="fas fa-check"></i> Gold VIP-ийн бүх эрх</li>
+                            <li><i class="fas fa-check"></i> Хязгааргүй хугацаа (Lifetime)</li>
+                            <li><i class="fas fa-check"></i> Custom Sound Effects (`!music`)</li>
+                            <li><i class="fas fa-check"></i> VIP Server Control & Maps Vote</li>
+                            <li><i class="fas fa-check"></i> Тэмцээний үнэгүй билет</li>
+                        </ul>
+                    </div>
+                    <button class="btn-outline" onclick="openVipModal('Platinum', '60,000₮')">Авах</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section id="leaderboard" class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">TOP PLAYERS</span>
+                <h2 class="section-title">Серверийн Шилдэг Тоглогчид</h2>
+                <p class="section-desc">Тэргүүн байранд жагссан тоглогчдод сар бүр сарын VIP болон CS2 арьсны бэлэг гардуулна.</p>
+            </div>
+
+            <div class="leaderboard-table-wrapper">
+                <div class="leaderboard-header-bar">
+                    <h3 style="font-size:1.1rem; font-weight:700;">Season 4 Leaderboard</h3>
+                    <input type="text" id="leaderboard-search" class="search-input" placeholder="Тоглогч хайх (Nick)...">
+                </div>
+
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th># Rank</th>
+                            <th>Тоглогч</th>
+                            <th>K/D Ratio</th>
+                            <th>Headshot %</th>
+                            <th>Нийт Kill</th>
+                            <th>Цол (Rank)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge rank-1">1</span></td>
+                            <td>
+                                <div class="player-cell">
+                                    <div class="player-avatar">S</div>
+                                    <span>Lagger.!</span>
+                                </div>
+                            </td>
+                            <td><span class="kd-ratio">2.45</span></td>
+                            <td>72%</td>
+                            <td>4,892</td>
+                            <td><span style="color:var(--gold-accent); font-weight:700;">Global Elite</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-2">2</span></td>
+                            <td>
+                                <div class="player-cell">
+                                    <div class="player-avatar" style="background:#3B82F6;">B</div>
+                                    <span>b1t_god</span>
+                                </div>
+                            </td>
+                            <td><span class="kd-ratio">2.12</span></td>
+                            <td>68%</td>
+                            <td>4,120</td>
+                            <td><span style="color:#C0C0C0; font-weight:700;">Supreme</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-3">3</span></td>
+                            <td>
+                                <div class="player-cell">
+                                    <div class="player-avatar" style="background:#10B981;">Z</div>
+                                    <span>ZywOo_UB</span>
+                                </div>
+                            </td>
+                            <td><span class="kd-ratio">1.98</span></td>
+                            <td>64%</td>
+                            <td>3,950</td>
+                            <td><span style="color:#CD7F32; font-weight:700;">Supreme</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">4</span></td>
+                            <td>
+                                <div class="player-cell">
+                                    <div class="player-avatar" style="background:#8B5CF6;">K</div>
+                                    <span>Karrigan_MN</span>
+                                </div>
+                            </td>
+                            <td><span class="kd-ratio">1.75</span></td>
+                            <td>59%</td>
+                            <td>3,410</td>
+                            <td><span>LEM</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge rank-other">5</span></td>
+                            <td>
+                                <div class="player-cell">
+                                    <div class="player-avatar" style="background:#EC4899;">N</div>
+                                    <span>Niko_Deagle</span>
+                                </div>
+                            </td>
+                            <td><span class="kd-ratio">1.68</span></td>
+                            <td>81%</td>
+                            <td>3,200</td>
+                            <td><span>LEM</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rules & FAQ Accordion Section -->
+    <section id="rules" class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">SERVER RULES & COMMANDS</span>
+                <h2 class="section-title">Серверийн Дүрэм ба Командууд</h2>
+                <p class="section-desc">Серверт тоглохдоо баримтлах үндсэн зарчмууд болон хэрэглэгдэх чат командууд.</p>
+            </div>
+
+            <div class="accordion">
+                
+                <div class="accordion-item active">
+                    <div class="accordion-header">
+                        <span>1. Серверийн Ерөнхий Дүрэм болон Хориглох Зүйлс</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Аливаа төрлийн чит (AIM, WH, Spinbot, Script), бусдыг доромжлох, микрофоноор чанга дуу чимээ гаргах, токсик зан авир гаргахыг хатуу хориглоно. Зөрчсөн тохиолдолд шууд перм бан өгнө.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>2. Чат дээр хэрэглэгдэх үндсэн командууд</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong>!ws</strong> - Weapon skin тохируулах меню<br>
+                        <strong>!knife</strong> - Хутга сонгох меню<br>
+                        <strong>!gloves</strong> - Бээлийний skin тохируулах<br>
+                        <strong>!rtv</strong> - Map солих санал асуулга эхлүүлэх<br>
+                        <strong>!vip</strong> - VIP цэс нээх</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>3. VIP багц авсны дараа эрх хэзээ идэвхжих вэ?</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Discord сервер дээр болон манай админууд руу гүйлгээний утга дээр SteamID64-өө бичин илгээснээс хойш 1-5 минутын дотор автомат системээр таны эрх сервер дээр идэвхжинэ.</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <span>4. Сар бүрийн тэмцээн ба шагналын фондод хэрхэн оролцох вэ?</span>
+                        <i class="fas fa-chevron-down accordion-icon"></i>
+                    </div>
+                    <div class="accordion-content">
+                        <p>Сар бүрийн 1-нд Leaderboard шинэчлэгддэг бөгөөд Top 3-т орсон тоглогчид автоматаар сарын VIP ба CS2 Skin шагнал авах эрхтэй болно.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="brand-logo">
+                        <span class="logo-badge">CS2</span>
+                        <span class="brand-name">LAGGER<span class="orange-text">.MN</span></span>
+                    </a>
+                    <p>Монголын хамгийн өндөр үзүүлэлттэй, бага лагтай Counter-Strike 2 сервер сүлжээ.</p>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Холбоосууд</h4>
+                    <ul class="footer-links">
+                        <li><a href="#hero">Нүүр</a></li>
+                        <li><a href="#servers">Серверүүд</a></li>
+                        <li><a href="#vip">VIP Стор</a></li>
+                        <li><a href="#leaderboard">Чансаа</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Серверүүд</h4>
+                    <ul class="footer-links">
+                        <li><a href="#servers">5v5 Matchmaking</a></li>
+                        <li><a href="#servers">Retake 128Tick</a></li>
+                        <li><a href="#servers">FFA Deathmatch</a></li>
+                        <li><a href="#servers">Surf & BHop</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Сошиал Канал</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://discord.gg" target="_blank"><i class="fab fa-discord"></i> Discord Server</a></li>
+                        <li><a href="https://steamcommunity.com" target="_blank"><i class="fab fa-steam"></i> Steam Group</a></li>
+                        <li><a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i> Facebook Page</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 LAGGER CS2 Community. All rights reserved.</p>
+                <p>Designed with <i class="fas fa-heart" style="color:var(--orange-primary);"></i> for Mongolian CS2 Gamers.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/main.js"></script>
+</body>
+</html>
