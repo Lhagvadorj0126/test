@@ -7991,55 +7991,28 @@ body.owner-hud-visible .cs2-hunt-hud {
 
 /* ===================== OWNER BIG CLAN WAR BANNER & SPONSOR AD APPROVAL QUEUE ===================== */
 
-@keyframes obbBgFlow {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes obbSheenSweep {
-  0%   { transform: translateX(-120%) skewX(-22deg); }
-  100% { transform: translateX(220%) skewX(-22deg); }
-}
-
 .owner-big-banner {
   position: fixed;
   top: 72px;
   left: 0;
   right: 0;
   z-index: 880;
-  padding: 16px 20px;
-  overflow: hidden;
-  background:
-    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 10px, transparent 10px 22px),
-    linear-gradient(120deg, #060b19 0%, #172554 45%, #1e1b4b 78%, #090d1a 100%);
-  background-size: 200% 200%;
-  animation: obbBgFlow 9s ease infinite;
-  border-bottom: 2px solid rgba(56, 189, 248, 0.72);
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.8), 0 0 28px rgba(56, 189, 248, 0.22);
-  backdrop-filter: blur(16px);
+  padding: 15px 20px;
+  background: rgba(8, 10, 18, 0.96);
+  border-bottom: 1.5px solid rgba(217, 70, 239, 0.5);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(18px);
 }
 
 .owner-big-banner.is-clanwar {
-  padding: 22px 24px;
-  background:
-    repeating-linear-gradient(135deg, rgba(253, 224, 71, 0.045) 0 12px, transparent 12px 24px),
-    radial-gradient(ellipse at 20% 0%, rgba(239, 68, 68, 0.45), transparent 55%),
-    radial-gradient(ellipse at 82% 100%, rgba(245, 158, 11, 0.42), transparent 55%),
-    linear-gradient(115deg, #1a0408 0%, #450a0a 28%, #78350f 58%, #1c1917 85%, #09090b 100%);
-  background-size: 220% 220%;
-  animation: obbBgFlow 7s ease infinite;
-  border-bottom: 3px solid #fde047;
-  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.88), 0 0 40px rgba(240, 168, 0, 0.36);
+  padding: 18px 22px;
+  background: linear-gradient(180deg, rgba(10, 10, 18, 0.97) 0%, rgba(18, 12, 26, 0.97) 100%);
+  border-bottom: 2px solid rgba(217, 70, 239, 0.65);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.85), 0 1px 18px rgba(217, 70, 239, 0.18);
 }
 
 .obb-sheen {
-  position: absolute;
-  inset: 0;
-  width: 42%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), rgba(253, 224, 71, 0.2), transparent);
-  pointer-events: none;
-  animation: obbSheenSweep 4.6s ease-in-out infinite;
+  display: none;
 }
 
 .obb-inner {
@@ -8057,52 +8030,47 @@ body.owner-hud-visible .cs2-hunt-hud {
 .obb-left {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex: 1;
   min-width: 240px;
 }
 
 .obb-live-pill {
-  padding: 6px 13px;
+  padding: 5px 12px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
-  border: 1px solid rgba(254, 202, 202, 0.55);
-  color: #fff;
+  background: rgba(217, 70, 239, 0.16);
+  border: 1px solid rgba(217, 70, 239, 0.6);
+  color: #f0abfc;
   font-family: var(--font-heading);
-  font-size: 0.74rem;
+  font-size: 0.72rem;
   font-weight: 900;
   letter-spacing: 0.08em;
   white-space: nowrap;
-  box-shadow: 0 0 18px rgba(239, 68, 68, 0.55);
-  animation: pulse 1.8s infinite;
 }
 
 .obb-title {
   font-family: var(--font-heading);
-  font-size: 1.42rem;
+  font-size: 1.38rem;
   font-weight: 900;
   letter-spacing: 0.04em;
-  background: linear-gradient(180deg, #ffffff 0%, #e0f2fe 55%, #38bdf8 100%);
+  background: linear-gradient(90deg, #ffd700, #d946ef, #ffd700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.85));
 }
 
 .owner-big-banner.is-clanwar .obb-title {
-  font-size: 1.85rem;
+  font-size: 1.72rem;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  background: linear-gradient(180deg, #fffbeb 0%, #fde047 45%, #f59e0b 85%, #ea580c 100%);
+  letter-spacing: 0.05em;
+  background: linear-gradient(90deg, #ffd700 0%, #f0abfc 40%, #d946ef 65%, #ffd700 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 4px 16px rgba(245, 158, 11, 0.5));
 }
 
 .obb-sub {
-  font-size: 0.86rem;
-  color: #f1f5f9;
+  font-size: 0.84rem;
+  color: #cbd5e1;
   margin-top: 3px;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
 }
 
 .obb-owner-sig {
@@ -8112,37 +8080,35 @@ body.owner-hud-visible .cs2-hunt-hud {
   margin-top: 7px;
   padding: 4px 12px;
   border-radius: 999px;
-  background: rgba(2, 6, 23, 0.62);
-  border: 1px solid rgba(253, 224, 71, 0.45);
-  box-shadow: 0 0 14px rgba(240, 168, 0, 0.22);
+  background: rgba(15, 12, 24, 0.9);
+  border: 1px solid rgba(217, 70, 239, 0.55);
 }
 
 .obb-crown {
-  font-size: 0.86rem;
+  font-size: 0.84rem;
 }
 
 .obb-owner-lbl {
   font-family: var(--font-heading);
   font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.08em;
   color: #94a3b8;
 }
 
 .obb-owner-name {
   font-family: var(--font-heading);
-  font-size: 0.84rem;
+  font-size: 0.86rem;
   font-weight: 900;
   letter-spacing: 0.05em;
-  background: linear-gradient(90deg, #fef08a, #f0a800, #fb923c, #fde047);
+  background: linear-gradient(90deg, #ffd700, #d946ef, #ffd700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .obb-cta {
-  padding: 11px 18px !important;
-  font-size: 0.86rem !important;
-  box-shadow: 0 0 22px rgba(240, 168, 0, 0.42);
+  padding: 10px 16px !important;
+  font-size: 0.84rem !important;
 }
 
 .obb-actions {
