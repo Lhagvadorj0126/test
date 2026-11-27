@@ -7491,41 +7491,35 @@ body.cs2-crosshair-active .sc-weapon-item {
     background: rgba(240, 168, 0, 0.14);
   }
 
-  /* 3. Tidy Floating Widgets (Weather HUD & Live Chat) */
-  .chicken-hunt-hud {
-    top: 68px !important;
-    left: 10px !important;
-    right: auto !important;
-    bottom: auto !important;
-    max-width: calc(100vw - 20px) !important;
-    z-index: 90 !important;
-  }
-
-  .chicken-hunt-hud.minimized {
-    width: auto !important;
-    padding: 5px 10px !important;
-    border-radius: 999px !important;
-  }
-
-  .chicken-hunt-hud.minimized .hud-title {
-    font-size: 0.72rem !important;
-  }
-
-  .live-chat-widget {
-    bottom: 74px !important;
-    right: 12px !important;
-    z-index: 950 !important;
-  }
-
-  .lc-panel {
-    width: calc(100vw - 24px) !important;
-    max-height: 62vh !important;
-    right: 0 !important;
-  }
-
+  /* 3. Hide Weather/Chicken HUD & Crosshair completely on phones; keep Live Chat compact & collapsed */
+  .chicken-hunt-hud,
+  #chickenHuntHud,
+  .cs2-crosshair,
   #cs2Crosshair,
   .cs2-killfeed {
     display: none !important;
+  }
+
+  .live-chat-widget {
+    bottom: 72px !important;
+    right: 10px !important;
+    width: auto !important;
+    max-width: calc(100vw - 20px) !important;
+    z-index: 950 !important;
+  }
+
+  .live-chat-widget.minimized {
+    width: auto !important;
+  }
+
+  .live-chat-widget:not(.minimized) {
+    width: calc(100vw - 20px) !important;
+  }
+
+  .lc-panel {
+    width: calc(100vw - 20px) !important;
+    max-height: 58vh !important;
+    right: 0 !important;
   }
 
   /* 4. Page Sections & Containers */

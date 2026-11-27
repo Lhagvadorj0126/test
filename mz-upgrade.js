@@ -2959,24 +2959,26 @@ window.addEventListener('DOMContentLoaded', () => {
   const isMobileScreen = window.innerWidth <= 860 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
   if (!isMobileScreen) return;
 
-  // 1. Start Weather/Chicken HUD minimized on phones so it never covers content
+  // 1. Hide Weather/Chicken HUD completely on phones
   const hud = document.getElementById('chickenHuntHud');
-  const hudBody = document.getElementById('hudBody');
-  if (hud && hudBody) {
-    hud.classList.add('minimized');
-    hudBody.style.display = 'none';
+  if (hud) hud.style.display = 'none';
+
+  // 2. Start Live Chat collapsed (minimized) on phones so it never blocks the screen on load
+  const chatWidget = document.getElementById('liveChatWidget');
+  const chatBtn = document.getElementById('lcToggleBtn');
+  if (chatWidget) {
+    chatWidget.classList.add('minimized');
+    if (chatBtn) chatBtn.textContent = '+';
   }
 
-  // 2. Disable custom crosshair & accidental gunshot SFX on touchscreens (user can re-enable in HUD)
+  // 3. Disable custom crosshair & accidental gunshot SFX on touchscreens
   if (typeof cs2CrosshairEnabled !== 'undefined') cs2CrosshairEnabled = false;
   if (typeof cs2SfxEnabled !== 'undefined') cs2SfxEnabled = false;
   document.body.classList.remove('cs2-aim-active');
-  const chBtn = document.getElementById('btnToggleCrosshair');
-  if (chBtn) { chBtn.classList.remove('active'); chBtn.textContent = '🎯 Crosshair: OFF'; }
-  const sfxBtn = document.getElementById('btnToggleSfx');
-  if (sfxBtn) { sfxBtn.classList.remove('active'); sfxBtn.textContent = '🔇 AK-47: OFF'; }
+  const crosshairEl = document.getElementById('cs2Crosshair');
+  if (crosshairEl) crosshairEl.style.display = 'none';
 
-  // 3. Keep background chicken count lightweight for smooth 60fps mobile scrolling
+  // 4. Keep background chicken count lightweight for smooth 60fps mobile scrolling
   if (typeof cs2Chickens !== 'undefined' && Array.isArray(cs2Chickens) && cs2Chickens.length > 6) {
     cs2Chickens.length = 6;
   }
