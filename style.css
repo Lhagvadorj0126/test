@@ -7873,3 +7873,117 @@ body.cs2-crosshair-active .sc-weapon-item {
   color: #94a3b8;
   margin-top: 2px;
 }
+
+
+/* ===================== OWNER ONLY WEATHER HUD & LIVE ARENA 3D POV LOCK ===================== */
+
+/* Hide weather/chicken HUD by default for regular players (Owner can toggle on in Owner Panel) */
+.cs2-hunt-hud {
+  display: none;
+}
+
+body.owner-hud-visible .cs2-hunt-hud {
+  display: block;
+}
+
+.arena-screen {
+  position: relative;
+}
+
+.arena-lock-gate {
+  position: absolute;
+  inset: 0;
+  z-index: 35;
+  background: rgba(6, 10, 22, 0.88);
+  backdrop-filter: blur(14px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.arena-lock-gate.locked {
+  display: flex;
+}
+
+.arena-lock-card {
+  max-width: 430px;
+  width: 100%;
+  text-align: center;
+  padding: 26px 22px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.96), rgba(9, 13, 28, 0.98));
+  border: 1px solid rgba(240, 168, 0, 0.45);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.72), 0 0 28px rgba(240, 168, 0, 0.14);
+}
+
+.arena-lock-icon {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+}
+
+.arena-lock-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.08rem;
+  color: #fde047;
+  margin: 0 0 8px;
+}
+
+.arena-lock-card p {
+  font-size: 0.84rem;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin: 0 0 16px;
+}
+
+.arena-lock-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.arena-lock-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.owner-sec {
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+}
+
+.owner-sec-title {
+  font-family: var(--font-heading);
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: #fde047;
+  margin-bottom: 10px;
+}
+
+.owner-weather-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.owner-w-btn.active {
+  background: rgba(240, 168, 0, 0.25) !important;
+  border-color: #f0a800 !important;
+  color: #fde047 !important;
+}
+
+.owner-check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  cursor: pointer;
+}

@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261127c" />
+  <link rel="stylesheet" href="style.css?v=20261127d" />
 </head>
 <body>
 
@@ -274,6 +274,23 @@
 
         <!-- Screen Viewport -->
         <div class="arena-screen" id="arenaScreen">
+
+          <!-- LOCK OVERLAY: Authorized Players Only (3D POV & Live Arena) -->
+          <div class="arena-lock-gate" id="arenaAccessGate">
+            <div class="arena-lock-card">
+              <div class="arena-lock-icon">🔒</div>
+              <h3>Зөвшөөрөлтэй Тоглогчдын Live Arena & 3D POV</h3>
+              <p id="arenaLockDesc">Энэ хэсгийг зөвхөн <strong>VIP+ / Admin / Overlord</strong> эсвэл <strong>Зөвшөөрлийн Кодтой</strong> тоглогчид шууд үзэх боломжтой. (Stream-Sniping хамгаалалт)</p>
+              <form class="arena-lock-form" onsubmit="submitArenaAccessKey(event)">
+                <input type="text" id="arenaKeyInput" class="steam-input" placeholder="🔑 Зөвшөөрлийн код оруулах..." autocomplete="off" />
+                <button type="submit" class="cw-btn-gold">🔓 Нээх</button>
+              </form>
+              <div class="arena-lock-actions">
+                <button type="button" class="cw-btn-outline" id="arenaLockShopBtn" onclick="navigatePage('shop')">👑 VIP+ / Admin Эрх Авах</button>
+                <button type="button" class="cw-btn-outline" onclick="openOwnerPanel()">⚙️ Owner Нэвтрэх</button>
+              </div>
+            </div>
+          </div>
 
           <!-- MODE 1: GOTV 2D LIVE RADAR & HUD -->
           <div class="arena-view active" id="arenaView-gotv">
@@ -1675,7 +1692,82 @@
   </button>
 </nav>
 
-<script src="app.js?v=20261127c"></script>
-<script src="mz-upgrade.js?v=20261127c"></script>
+<!-- ===== OWNER ONLY CONTROL PANEL MODAL (HIDDEN FROM PLAYERS) ===== -->
+<div class="mz-modal-backdrop" id="ownerPanelModal" onclick="if(event.target===this)closeOwnerPanel()">
+  <div class="mz-modal-box" style="max-width:520px">
+    <div class="mz-modal-header">
+      <h3>👑 Owner Control Panel (Зөвхөн Эзэмшигч)</h3>
+      <button type="button" class="mz-modal-close" onclick="closeOwnerPanel()">✕</button>
+    </div>
+
+    <!-- Step 1: PIN Login -->
+    <div id="ownerPinGate">
+      <p style="font-size:0.84rem;color:var(--text-muted);margin-bottom:12px">
+        Энэ хэсэг зөвхөн сайтын эзэмшигчид зориулагдсан. Нууц PIN кодоо оруулна уу.
+      </p>
+      <form onsubmit="unlockOwnerPanel(event)" style="display:flex;gap:8px">
+        <input type="password" id="ownerPinInput" class="steam-input" placeholder="🔑 Owner PIN код (Анхны: 2026)" autocomplete="off" required />
+        <button type="submit" class="cw-btn-gold">🔓 Нэвтрэх</button>
+      </form>
+    </div>
+
+    <!-- Step 2: Unlocked Owner Controls -->
+    <div id="ownerControlsBody" style="display:none">
+      <!-- Section A: Weather / Season -->
+      <div class="owner-sec">
+        <div class="owner-sec-title">☀️ 1. Сайтын Улирал & Цаг Агаар (Зөвхөн Та Солино)</div>
+        <div class="owner-weather-grid">
+          <button type="button" class="cw-btn-outline owner-w-btn" data-ow="summer" onclick="ownerSetWeather('summer')">☀️ Зун</button>
+          <button type="button" class="cw-btn-outline owner-w-btn" data-ow="winter" onclick="ownerSetWeather('winter')">❄️ Өвөл</button>
+          <button type="button" class="cw-btn-outline owner-w-btn" data-ow="rain" onclick="ownerSetWeather('rain')">🌧️ Бороо</button>
+          <button type="button" class="cw-btn-outline owner-w-btn" data-ow="spring" onclick="ownerSetWeather('spring')">🌸 Хавар</button>
+          <button type="button" class="cw-btn-outline owner-w-btn" data-ow="autumn" onclick="ownerSetWeather('autumn')">🍂 Намар</button>
+          <button type="button" class="cw-btn-outline owner-w-btn" data-ow="auto" onclick="ownerSetWeather('auto')">🌍 УБ Auto</button>
+        </div>
+        <label class="owner-check-row">
+          <input type="checkbox" id="ownerShowHudCheck" onchange="ownerToggleHudVisibility(this.checked)" />
+          <span>Зүүн доод булангийн Цаг агаар / Тахиа HUD-ийг дэлгэц дээр харуулах</span>
+        </label>
+      </div>
+
+      <!-- Section B: Live Arena & 3D POV Access Control -->
+      <div class="owner-sec">
+        <div class="owner-sec-title">🔒 2. Live Arena & 3D POV Зөвшөөрлийн Тохиргоо</div>
+        <label class="owner-check-row" style="margin-bottom:10px">
+          <input type="checkbox" id="ownerArenaLockCheck" checked onchange="ownerSaveArenaSettings()" />
+          <span><strong>Live Arena & 3D POV-г цоожлох</strong> (Зөвхөн зөвшөөрөлтэй хүмүүс үзнэ)</span>
+        </label>
+        <label class="cw-form-label">Хэнд үзүүлэх вэ?</label>
+        <select id="ownerArenaModeSelect" class="steam-input" onchange="ownerSaveArenaSettings()" style="margin-bottom:10px">
+          <option value="vip_or_key">👑 VIP+ / Admin / Overlord + Зөвшөөрлийн Кодтой хүмүүс</option>
+          <option value="key_only">🔑 Зөвхөн Зөвшөөрлийн Код & SteamID Whitelist-тэй хүмүүс</option>
+        </select>
+        <label class="cw-form-label">🔑 Зөвшөөрлийн Нууц Код (Тоглогчид өгөх Access Key)</label>
+        <div style="display:flex;gap:8px;margin-bottom:10px">
+          <input type="text" id="ownerArenaKeyInput" class="steam-input" value="MZPOV2026" onchange="ownerSaveArenaSettings()" />
+          <button type="button" class="cw-btn-outline" onclick="copyOwnerArenaKey()">📋 Хуулах</button>
+        </div>
+        <label class="cw-form-label">🛡️ Зөвшөөрөгдсөн SteamID64 Whitelist (таслалаар тусгаарлана)</label>
+        <input type="text" id="ownerWhitelistInput" class="steam-input" placeholder="Жнь: 76561198992841023, 76561198123456789" onchange="ownerSaveArenaSettings()" />
+      </div>
+
+      <!-- Section C: Change Owner PIN -->
+      <div class="owner-sec" style="margin-bottom:0">
+        <div class="owner-sec-title">🔐 3. Owner PIN Код Солих</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" id="ownerNewPinInput" class="steam-input" placeholder="Шинэ PIN код..." maxlength="20" />
+          <button type="button" class="cw-btn-gold" onclick="ownerChangePin()">Хадгалах</button>
+        </div>
+        <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:0.75rem;color:var(--text-muted)">
+          <span>Нээх товч: <code>Ctrl+Shift+A</code> эсвэл Лого дээр 3 удаа дарах</span>
+          <button type="button" class="cw-btn-outline" style="padding:4px 10px;font-size:0.74rem" onclick="ownerLogout()">Гарах</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="app.js?v=20261127d"></script>
+<script src="mz-upgrade.js?v=20261127d"></script>
 </body>
 </html>

@@ -3010,3 +3010,267 @@ window.addEventListener('DOMContentLoaded', () => {
     cs2Chickens.length = 6;
   }
 });
+
+
+// ===================== 14. OWNER CONTROL PANEL (WEATHER + LIVE ARENA 3D POV ACCESS GATE) =====================
+const MZ_OWNER_CFG_KEY = 'mz_owner_config_v1';
+const MZ_ARENA_KEY_UNLOCK = 'mz_arena_unlocked_key';
+let mzOwnerAuthenticated = false;
+
+function getOwnerConfig() {
+  const defaults = {
+    pin: '2026',
+    weather: 'summer',
+    showHud: false,
+    arenaLocked: true,
+    arenaMode: 'vip_or_key', // 'vip_or_key' | 'key_only'
+    arenaKey: 'MZPOV2026',
+    whitelist: []
+  };
+  try {
+    const saved = JSON.parse(localStorage.getItem(MZ_OWNER_CFG_KEY) || '{}');
+    return { ...defaults, ...saved };
+  } catch (e) {
+    return defaults;
+  }
+}
+
+function saveOwnerConfig(cfg) {
+  try { localStorage.setItem(MZ_OWNER_CFG_KEY, JSON.stringify(cfg)); } catch (e) {}
+}
+
+function hasArena3DPovAccess() {
+  const cfg = getOwnerConfig();
+  if (!cfg.arenaLocked) return true;
+  if (mzOwnerAuthenticated) return true;
+
+  // Check entered Access Key
+  const savedKey = (localStorage.getItem(MZ_ARENA_KEY_UNLOCK) || '').trim();
+  if (savedKey && cfg.arenaKey && savedKey.toLowerCase() === cfg.arenaKey.toLowerCase()) {
+    return true;
+  }
+
+  // Check SteamID64 whitelist
+  const userSteamId = (window.steamUser && window.steamUser.steamId) ? String(window.steamUser.steamId).trim() : '';
+  if (userSteamId && Array.isArray(cfg.whitelist) && cfg.whitelist.includes(userSteamId)) {
+    return true;
+  }
+
+  // Check VIP+ / Mod / Admin / Overlord rank if vip_or_key mode
+  if (cfg.arenaMode === 'vip_or_key') {
+    const rankEl = document.getElementById('userRankText');
+    const rankTxt = (rankEl?.textContent || '').toUpperCase();
+    if (rankTxt.includes('VIP+') || rankTxt.includes('MOD') || rankTxt.includes('ADMIN') || rankTxt.includes('OVERLORD')) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+function updateArenaAccessGateUI(activeMode) {
+  const gate = document.getElementById('arenaAccessGate');
+  const desc = document.getElementById('arenaLockDesc');
+  const shopBtn = document.getElementById('arenaLockShopBtn');
+  if (!gate) return;
+
+  // Allow Sponsor Ads tab to remain open to everyone
+  const isSponsor = activeMode === 'sponsor' || document.getElementById('arenaView-sponsor')?.classList.contains('active');
+  if (isSponsor || hasArena3DPovAccess()) {
+    gate.classList.remove('locked');
+    return;
+  }
+
+  const cfg = getOwnerConfig();
+  if (desc) {
+    desc.innerHTML = cfg.arenaMode === 'key_only'
+      ? 'Энэ хэсгийг зөвхөн <strong>Owner-ээс Зөвшөөрлийн Код эсвэл SteamID</strong> авсан тоглогчид үзнэ. (Stream-Sniping хамгаалалт)'
+      : 'Энэ хэсгийг зөвхөн <strong>VIP+ / Admin / Overlord</strong> эсвэл <strong>Зөвшөөрлийн Кодтой</strong> тоглогчид шууд үзнэ. (Stream-Sniping хамгаалалт)';
+  }
+  if (shopBtn) {
+    shopBtn.style.display = cfg.arenaMode === 'key_only' ? 'none' : '';
+  }
+  gate.classList.add('locked');
+}
+
+function submitArenaAccessKey(e) {
+  e.preventDefault();
+  const inp = document.getElementById('arenaKeyInput');
+  const entered = (inp?.value || '').trim();
+  const cfg = getOwnerConfig();
+  if (!entered) return;
+
+  if (entered.toLowerCase() === (cfg.arenaKey || '').toLowerCase() || entered === cfg.pin) {
+    try { localStorage.setItem(MZ_ARENA_KEY_UNLOCK, cfg.arenaKey); } catch (err) {}
+    if (inp) inp.value = '';
+    updateArenaAccessGateUI();
+    if (typeof showToast === 'function') {
+      showToast('success', '🔓', 'Зөвшөөрөл баталгаажлаа!', 'Live Arena & 3D POV амжилттай нээгдлээ.', 3200);
+    }
+  } else {
+    if (typeof showToast === 'function') {
+      showToast('info', '❌', 'Зөвшөөрлийн код буруу байна!', 'Серверийн админ / эзэмшигчээс зөв кодоо авна уу.', 3000);
+    }
+  }
+}
+
+// Wrap setArenaMode so switching between GOTV / Stream 3D POV / Sponsor updates lock gate
+const _origSetArenaMode = window.setArenaMode;
+window.setArenaMode = function(mode) {
+  if (typeof _origSetArenaMode === 'function') _origSetArenaMode(mode);
+  updateArenaAccessGateUI(mode);
+};
+
+// ---- OWNER PANEL MODAL CONTROLS ----
+function openOwnerPanel() {
+  const modal = document.getElementById('ownerPanelModal');
+  if (modal) modal.classList.add('open');
+  syncOwnerPanelUI();
+}
+
+function closeOwnerPanel() {
+  document.getElementById('ownerPanelModal')?.classList.remove('open');
+}
+
+function syncOwnerPanelUI() {
+  const gate = document.getElementById('ownerPinGate');
+  const body = document.getElementById('ownerControlsBody');
+  if (gate) gate.style.display = mzOwnerAuthenticated ? 'none' : 'block';
+  if (body) body.style.display = mzOwnerAuthenticated ? 'block' : 'none';
+  if (!mzOwnerAuthenticated) return;
+
+  const cfg = getOwnerConfig();
+  document.querySelectorAll('.owner-w-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.ow === cfg.weather);
+  });
+  const hudCheck = document.getElementById('ownerShowHudCheck');
+  if (hudCheck) hudCheck.checked = !!cfg.showHud;
+  const lockCheck = document.getElementById('ownerArenaLockCheck');
+  if (lockCheck) lockCheck.checked = !!cfg.arenaLocked;
+  const modeSel = document.getElementById('ownerArenaModeSelect');
+  if (modeSel) modeSel.value = cfg.arenaMode || 'vip_or_key';
+  const keyInp = document.getElementById('ownerArenaKeyInput');
+  if (keyInp) keyInp.value = cfg.arenaKey || 'MZPOV2026';
+  const wlInp = document.getElementById('ownerWhitelistInput');
+  if (wlInp) wlInp.value = (cfg.whitelist || []).join(', ');
+}
+
+function unlockOwnerPanel(e) {
+  e.preventDefault();
+  const inp = document.getElementById('ownerPinInput');
+  const pin = (inp?.value || '').trim();
+  const cfg = getOwnerConfig();
+  if (pin === cfg.pin) {
+    mzOwnerAuthenticated = true;
+    if (inp) inp.value = '';
+    syncOwnerPanelUI();
+    updateArenaAccessGateUI();
+    if (typeof showToast === 'function') {
+      showToast('gold', '👑', 'Owner Control Panel нээгдлээ!', 'Улирал болон 3D POV зөвшөөрлөө удирдана уу.', 3000);
+    }
+  } else {
+    if (typeof showToast === 'function') {
+      showToast('info', '❌', 'Owner PIN буруу байна!', '', 2500);
+    }
+  }
+}
+
+function ownerLogout() {
+  mzOwnerAuthenticated = false;
+  syncOwnerPanelUI();
+  updateArenaAccessGateUI();
+  closeOwnerPanel();
+}
+
+function ownerSetWeather(mode) {
+  const cfg = getOwnerConfig();
+  cfg.weather = mode;
+  saveOwnerConfig(cfg);
+  if (typeof setManualWeather === 'function') setManualWeather(mode, null);
+  syncOwnerPanelUI();
+  if (typeof showToast === 'function') {
+    showToast('success', '🌤️', `Сайтын улирал солигдлоо: ${mode.toUpperCase()}`, 'Зөвхөн Owner эрхээр өөрчлөгдлөө.', 2500);
+  }
+}
+
+function ownerToggleHudVisibility(show) {
+  const cfg = getOwnerConfig();
+  cfg.showHud = !!show;
+  saveOwnerConfig(cfg);
+  document.body.classList.toggle('owner-hud-visible', !!show);
+}
+
+function ownerSaveArenaSettings() {
+  const cfg = getOwnerConfig();
+  cfg.arenaLocked = !!document.getElementById('ownerArenaLockCheck')?.checked;
+  cfg.arenaMode = document.getElementById('ownerArenaModeSelect')?.value || 'vip_or_key';
+  cfg.arenaKey = (document.getElementById('ownerArenaKeyInput')?.value || 'MZPOV2026').trim();
+  const wlRaw = document.getElementById('ownerWhitelistInput')?.value || '';
+  cfg.whitelist = wlRaw.split(',').map(s => s.trim()).filter(Boolean);
+  saveOwnerConfig(cfg);
+  updateArenaAccessGateUI();
+  if (typeof showToast === 'function') {
+    showToast('success', '🔒', 'Live Arena 3D POV тохиргоо хадгалагдлаа!', '', 2500);
+  }
+}
+
+function copyOwnerArenaKey() {
+  const val = document.getElementById('ownerArenaKeyInput')?.value || '';
+  navigator.clipboard?.writeText(val).catch(() => {});
+  if (typeof showToast === 'function') {
+    showToast('gold', '📋', `Зөвшөөрлийн код хуулагдлаа: ${val}`, 'Зөвшөөрсөн тоглогчдодоо илгээнэ үү.', 2800);
+  }
+}
+
+function ownerChangePin() {
+  const newPin = (document.getElementById('ownerNewPinInput')?.value || '').trim();
+  if (newPin.length < 4) {
+    if (typeof showToast === 'function') showToast('info', '⚠️', 'PIN код 4-өөс дээш тэмдэгт байх ёстой!', '', 2500);
+    return;
+  }
+  const cfg = getOwnerConfig();
+  cfg.pin = newPin;
+  saveOwnerConfig(cfg);
+  document.getElementById('ownerNewPinInput').value = '';
+  if (typeof showToast === 'function') showToast('success', '🔐', 'Шинэ Owner PIN хадгалагдлаа!', '', 2800);
+}
+
+// Secret Owner shortcuts: Ctrl+Shift+A OR Triple-tap on Navbar Logo OR ?owner=1
+window.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+    e.preventDefault();
+    openOwnerPanel();
+  }
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const cfg = getOwnerConfig();
+  // Apply Owner saved weather & HUD visibility
+  if (cfg.weather && typeof setManualWeather === 'function') {
+    setManualWeather(cfg.weather, null);
+  }
+  document.body.classList.toggle('owner-hud-visible', !!cfg.showHud && window.innerWidth > 860);
+  updateArenaAccessGateUI();
+
+  // Triple-tap logo shortcut (works on phones & desktop!)
+  const logo = document.querySelector('.nav-logo');
+  if (logo) {
+    let tapCount = 0;
+    let tapTimer = null;
+    logo.addEventListener('click', () => {
+      tapCount++;
+      clearTimeout(tapTimer);
+      if (tapCount >= 3) {
+        tapCount = 0;
+        openOwnerPanel();
+      } else {
+        tapTimer = setTimeout(() => { tapCount = 0; }, 650);
+      }
+    });
+  }
+
+  // ?owner=1 URL shortcut
+  if (window.location.search.includes('owner=1')) {
+    openOwnerPanel();
+  }
+});
