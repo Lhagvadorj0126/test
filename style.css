@@ -8049,19 +8049,20 @@ body.owner-hud-visible .cs2-hunt-hud {
 }
 
 .obb-title {
-  font-family: var(--font-heading);
+  font-family: 'Inter', 'Rajdhani', sans-serif;
   font-size: 1.38rem;
-  font-weight: 900;
-  letter-spacing: 0.04em;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: none;
   background: linear-gradient(90deg, #ffd700, #d946ef, #ffd700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .owner-big-banner.is-clanwar .obb-title {
-  font-size: 1.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 1.68rem;
+  text-transform: none;
+  letter-spacing: 0.01em;
   background: linear-gradient(90deg, #ffd700 0%, #f0abfc 40%, #d946ef 65%, #ffd700 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -8097,10 +8098,11 @@ body.owner-hud-visible .cs2-hunt-hud {
 }
 
 .obb-owner-name {
-  font-family: var(--font-heading);
-  font-size: 0.86rem;
-  font-weight: 900;
-  letter-spacing: 0.05em;
+  font-family: 'Inter', 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: none;
   background: linear-gradient(90deg, #ffd700, #d946ef, #ffd700);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
