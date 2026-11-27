@@ -1,578 +1,1624 @@
 <!DOCTYPE html>
 <html lang="mn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAGGER CS2 | Монголын Шилдэг Counter-Strike 2 Сервер Сүлжээ</title>
-    <meta name="description" content="LAGGER CS2 - Монголын хамгийн өндөр үзүүлэлттэй, бага лагтай 5v5 Matchmaking, Retake, Deathmatch болон Surf серверүүд. VIP статус, тэмцээн, чансааны системтэй.">
-    
-    <!-- Google Fonts & FontAwesome Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>THE MONGOLZ — CS2 Server</title>
+  <meta name="description" content="The Mongolz CS2 Community Server — Mongolia's premier Counter-Strike 2 community with Public, Deathmatch, KZ/Bhop and 5v5 competitive servers." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <!-- Header / Navigation Bar -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="#" class="brand-logo">
-                <span class="logo-badge">CS2</span>
-                <span class="brand-name">LAGGER<span class="orange-text">.MN</span></span>
-            </a>
-            <ul class="nav-links">
-                <li><a href="#hero" class="active">Нүүр</a></li>
-                <li><a href="#servers">Серверүүд</a></li>
-                <li><a href="#vip">VIP Стор</a></li>
-                <li><a href="#leaderboard">Чансаа</a></li>
-                <li><a href="#rules">Дүрэм</a></li>
-            </ul>
-            <div class="nav-cta">
-                <a href="https://discord.gg" target="_blank" class="btn-primary">
-                    <i class="fab fa-discord"></i> Discord-д Нэгдэх
-                </a>
-            </div>
+
+<!-- ===== 3D CS2 WEATHER (ULAANBAATAR) & CHICKEN HUNT BACKGROUND ===== -->
+<div class="cs2-3d-bg-stage" id="cs2BgStage">
+  <div class="cs2-3d-world" id="cs2World">
+    <div class="cs2-sky-glow" id="cs2SkyGlow"></div>
+    <div class="cs2-floor-grid"></div>
+  </div>
+  <canvas id="cs2ChickenCanvas"></canvas>
+</div>
+
+<!-- CS2 Custom Crosshair -->
+<div class="cs2-crosshair" id="cs2Crosshair">
+  <span class="ch-line ch-top"></span>
+  <span class="ch-line ch-right"></span>
+  <span class="ch-line ch-bottom"></span>
+  <span class="ch-line ch-left"></span>
+  <span class="ch-dot"></span>
+  <div class="ch-hitmarker" id="chHitmarker"></div>
+</div>
+
+<!-- CS2 Killfeed (Top Right below Navbar) -->
+<div class="cs2-killfeed" id="cs2Killfeed"></div>
+
+<!-- CS2 Chicken Hunter, Crosshair & Ulaanbaatar Weather HUD (Bottom Left) -->
+<div class="cs2-hunt-hud" id="cs2HuntHud">
+  <div class="hud-top">
+    <span class="hud-title" id="hudWeatherTitle">🔫 AK-47 · 📍 Улаанбаатар</span>
+    <button class="hud-min-btn" onclick="toggleHuntHud()" title="Хураах / Дэлгэх">_</button>
+  </div>
+  <div class="hud-body" id="hudBody">
+    <div class="hud-weather-status" id="ubWeatherStatus">
+      <span>🇲🇳 Улаанбаатар: <strong id="ubTempText">Ачаалж байна...</strong></span>
+    </div>
+    <div class="hud-weather-btns">
+      <button class="hw-btn active" data-weather="summer" onclick="setManualWeather('summer', this)" title="Зун · Нар, Гол ус, Мод, Цэцэг">☀️ Зун</button>
+      <button class="hw-btn" data-weather="winter" onclick="setManualWeather('winter', this)" title="Өвөл · Цас">❄️ Цас</button>
+      <button class="hw-btn" data-weather="rain" onclick="setManualWeather('rain', this)" title="Бороо · Солонго">🌧️ Бороо</button>
+      <button class="hw-btn" data-weather="spring" onclick="setManualWeather('spring', this)" title="Хавар">🌸 Хавар</button>
+      <button class="hw-btn" data-weather="autumn" onclick="setManualWeather('autumn', this)" title="Намар">🍂 Намар</button>
+      <button class="hw-btn" data-weather="auto" onclick="setManualWeather('auto', this)" title="Улаанбаатарын бодит цаг агаар">🌍 Auto</button>
+    </div>
+    <div class="hud-stats-row">
+      <div class="hud-stat">
+        <span class="hs-label">🐔 Агнасан</span>
+        <span class="hs-val" id="chickenKillsVal">0</span>
+      </div>
+      <div class="hud-stat">
+        <span class="hs-label">🔥 Streak</span>
+        <span class="hs-val gold" id="chickenStreakVal">0x</span>
+      </div>
+      <div class="hud-stat">
+        <span class="hs-label">🎯 Горим</span>
+        <span class="hs-val green" id="chickenCoinsVal">Fun</span>
+      </div>
+    </div>
+    <div class="hud-controls-row">
+      <span class="hc-label">Crosshair:</span>
+      <div class="hc-colors">
+        <button class="ch-color-btn active" style="background:#00ff66" onclick="setCrosshairColor('#00ff66', this)" title="CS2 Classic Green"></button>
+        <button class="ch-color-btn" style="background:#00e5ff" onclick="setCrosshairColor('#00e5ff', this)" title="Cyan Pro"></button>
+        <button class="ch-color-btn" style="background:#ffd000" onclick="setCrosshairColor('#ffd000', this)" title="MongolZ Gold"></button>
+        <button class="ch-color-btn" style="background:#ff2a85" onclick="setCrosshairColor('#ff2a85', this)" title="Neon Pink"></button>
+        <button class="ch-color-btn" style="background:#ffffff" onclick="setCrosshairColor('#ffffff', this)" title="White"></button>
+      </div>
+    </div>
+    <div class="hud-actions-row">
+      <button class="hud-action-btn active" id="btnToggleCrosshair" onclick="toggleCs2Crosshair()">🎯 Crosshair: ON</button>
+      <button class="hud-action-btn active" id="btnToggleSfx" onclick="toggleCs2Sfx()">🔊 AK-47: ON</button>
+      <button class="hud-action-btn" onclick="spawnChickenWave()">🐔 +Drop Тахиа</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div id="toast-container" class="toast-container"></div>
+
+<!-- ===== NAV ===== -->
+<nav class="navbar" id="navbar">
+  <div class="nav-inner">
+    <a href="#home" class="nav-logo" onclick="navigatePage('home');return false;">
+      <div class="logo-emblem">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+          <polygon points="20,2 38,10 38,30 20,38 2,30 2,10" fill="#0a0a12" stroke="#f0a800" stroke-width="1.5"/>
+          <polygon points="20,6 34,13 34,27 20,34 6,27 6,13" fill="none" stroke="#3b82f6" stroke-width="0.8" opacity="0.6"/>
+          <text x="20" y="25" font-family="Orbitron" font-size="11" font-weight="900" fill="#f0a800" text-anchor="middle">MZ</text>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-main">THE MONGOLZ</span>
+        <span class="logo-sub">CS2 SERVER</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="navLinksList">
+      <li><a href="#home" class="nav-link active" data-page="home" onclick="navigatePage('home');return false;">🏠 Нүүр</a></li>
+      <li><a href="#arena" class="nav-link" data-page="arena" onclick="navigatePage('arena');return false;">📺 Live</a></li>
+      <li><a href="#servers" class="nav-link" data-page="servers" onclick="navigatePage('servers');return false;">🖥️ Сервер</a></li>
+      <li><a href="#clanwar" class="nav-link nav-link-cw" data-page="clanwar" onclick="navigatePage('clanwar');return false;">⚔️ Clan War</a></li>
+      <li><a href="#skinchanger" class="nav-link" data-page="skinchanger" onclick="navigatePage('skinchanger');return false;">🎨 Skins</a></li>
+      <li><a href="#cases" class="nav-link" data-page="cases" onclick="navigatePage('cases');return false;">📦 Кейс</a></li>
+      <li><a href="#shop" class="nav-link nav-link-shop" data-page="shop" onclick="navigatePage('shop');return false;">🛒 Дэлгүүр</a></li>
+      <li><a href="#leaderboard" class="nav-link" data-page="leaderboard" onclick="navigatePage('leaderboard');return false;">🏆 Top 15</a></li>
+      <li><a href="#community" class="nav-link" data-page="community" onclick="navigatePage('community');return false;">🗣️ Community</a></li>
+      <li><a href="#banlist" class="nav-link" data-page="banlist" onclick="navigatePage('banlist');return false;">🛡️ Banlist</a></li>
+    </ul>
+    <div class="nav-actions">
+      <div class="mz-wallet" onclick="openTopupModal()" title="MZ Coin цэнэглэх">
+        <div class="mz-coin-icon">MZ</div>
+        <div class="mz-coin-info">
+          <span class="mz-coin-label">MZ COIN</span>
+          <span class="mz-coin-amount" id="mzBalance">25,000</span>
         </div>
-    </nav>
-    
-    <!-- Hero Section -->
-    <header id="hero" class="hero">
-        <div class="container hero-content">
-            <div class="hero-pill">
-                <span class="pulse-dot"></span>
-                <span>Монголын 128 Tick High-Performance CS2 Серверүүд</span>
-            </div>
-            <h1 class="hero-title">
-                <span class="gradient-text">LAGGER CS2</span> COMMUNITY
-            </h1>
-            <p class="hero-subtitle">
-                Хамгийн бага pings, 128 tick сервер, чанартай anti-cheat болон сонирхолтой тэмцээнүүдээр дүүрэн Монголын CS2 тоглоомчдын нэгдсэн төв.
-            </p>
+        <button class="mz-add-btn" type="button" title="MZ Coin цэнэглэх">+</button>
+      </div>
+      <div class="user-rank-pill" id="userRankPill" title="Таны одоогийн эрх">
+        <span class="rank-dot"></span>
+        <span id="userRankText">ТОГЛОГЧ</span>
+      </div>
+      <!-- Steam Auth Button / Linked User Pill -->
+      <div id="steamNavArea">
+        <button class="btn-steam-login" id="btnSteamLogin" onclick="openSteamModal()" title="Steam албан ёсны сайтаар нэвтрэх">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/></svg>
+          <span>Steam</span>
+        </button>
+      </div>
+      <!-- Official Discord Auth Button -->
+      <div id="discordNavArea">
+        <button class="btn-discord-nav" id="btnDiscordLogin" onclick="openDiscordModal()" title="Discord албан ёсны сайтаар нэвтрэх">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          <span>Discord</span>
+        </button>
+      </div>
+    </div>
+    <button class="nav-toggle" id="navToggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-            <div class="hero-cta-group">
-                <a href="#servers" class="btn-primary">
-                    <i class="fas fa-gamepad"></i> Сервер Таних
-                </a>
-                <a href="#vip" class="btn-outline">
-                    <i class="fas fa-crown" style="color: var(--gold-accent);"></i> VIP Багцууд
-                </a>
-            </div>
+<!-- ===== HERO (HOME PAGE) ===== -->
+<section class="hero page-section active" id="hero" data-page-id="home">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="hero-particles" id="particles"></div>
+    <div class="hero-glow glow-blue"></div>
+    <div class="hero-glow glow-gold"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      <span>LIVE · <strong id="heroTotalOnlineBadge">473</strong> тоглогч онлайн · 🇲🇳 Улаанбаатар</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="title-line">THE</span>
+      <span class="title-line highlight">MONGOLZ</span>
+      <span class="title-line">CS2 SERVER</span>
+    </h1>
+    <p class="hero-subtitle">Монголын #1 Counter-Strike 2 Сервер · 128-Tick · Skin Changer · 5v5 Matchmaking · Case Opening</p>
+    <div class="hero-ip-box">
+      <div class="ip-label">SERVER IP</div>
+      <div class="ip-value" id="heroIP">connect.mongolz.gg</div>
+      <button class="ip-copy-btn" onclick="copyIP()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Хуулах
+      </button>
+    </div>
+    <div class="hero-cta">
+      <a href="#servers" class="btn-primary" onclick="navigatePage('servers');return false;">
+        <span>🖥️ Серверүүд & 5v5</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="#arena" class="btn-secondary" onclick="navigatePage('arena');return false;">📺 Live Үзэх</a>
+      <a href="#shop" class="btn-secondary" style="border-color:rgba(240,168,0,0.5);color:#ffd000" onclick="navigatePage('shop');return false;">🛒 VIP / Админ</a>
+    </div>
 
-            <!-- Stats Bar -->
-            <div class="stats-bar">
-                <div class="stat-item">
-                    <div class="stat-number" id="total-online-players">218</div>
-                    <div class="stat-label">Одоо Тоглож Буй</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">5</div>
-                    <div class="stat-label">Ажиллаж Буй Сервер</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">99.9%</div>
-                    <div class="stat-label">Uptime Үзүүлэлт</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">128</div>
-                    <div class="stat-label">Tickrate Систем</div>
-                </div>
-            </div>
+    <!-- Per-Server-Mode Online Players Breakdown -->
+    <div class="hero-online-breakdown">
+      <div class="hob-card" onclick="navigatePage('servers')">
+        <span class="hob-icon">🌐</span>
+        <div class="hob-info">
+          <span class="hob-label">PUBLIC (2 match)</span>
+          <span class="hob-val"><strong id="onlinePublicCount">41</strong> / 48</span>
         </div>
-    </header>
-
-    <!-- Server Status Section -->
-    <section id="servers" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">LIVE SERVERS</span>
-                <h2 class="section-title">Серверүүдийн Жагсаалт</h2>
-                <p class="section-desc">Тоглохыг хүссэн горимоо сонгон IP хаягийг нэг даралтаар хуулан тоглоомдоо шууд холбогдоно уу.</p>
-            </div>
-
-            <!-- Server Filter Tabs -->
-            <div class="server-filters">
-                <button class="filter-btn active" data-filter="all">Бүх Сервер</button>
-                <button class="filter-btn" data-filter="comp">5v5 Competitive</button>
-                <button class="filter-btn" data-filter="retake">Retake Mode</button>
-                <button class="filter-btn" data-filter="dm">Deathmatch</button>
-                <button class="filter-btn" data-filter="surf">Surf & Fun</button>
-            </div>
-
-            <!-- Server Cards Grid -->
-            <div class="server-grid">
-
-                <!-- Card 1: 5v5 Comp #1 -->
-                <div class="server-card" data-category="comp">
-                    <div class="server-thumb">
-                        <img src="assets/images/map_dust2.jpg" alt="Dust2 Map">
-                        <span class="server-badge">5v5 MATCHMAKING</span>
-                        <span class="ping-badge"><i class="fas fa-wifi"></i> 12 ms</span>
-                    </div>
-                    <div class="server-body">
-                        <h3 class="server-name">LAGGER #1 [5v5 Competitive]</h3>
-                        <div class="server-map-info">
-                            <span><i class="fas fa-map"></i> de_dust2</span>
-                            <span><i class="fas fa-shield-alt"></i> VAC + AntiCheat</span>
-                        </div>
-                        
-                        <div class="player-bar-container">
-                            <div class="player-count-flex">
-                                <span>Онлайн Тоглогчид</span>
-                                <span><strong class="live-player-count" data-max="10">9</strong> / 10</span>
-                            </div>
-                            <div class="player-bar">
-                                <div class="player-bar-fill" style="width: 90%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="server-actions">
-                            <div class="ip-box" data-ip="cs2.lagger.mn:27015">
-                                <span>cs2.lagger.mn:27015</span>
-                                <i class="fas fa-copy copy-icon"></i>
-                            </div>
-                            <a href="steam://connect/cs2.lagger.mn:27015" class="btn-primary" style="padding: 0.6rem 1rem;">
-                                <i class="fas fa-play"></i> Join
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2: 5v5 Comp #2 -->
-                <div class="server-card" data-category="comp">
-                    <div class="server-thumb">
-                        <img src="assets/images/map_mirage.jpg" alt="Mirage Map">
-                        <span class="server-badge">5v5 MATCHMAKING</span>
-                        <span class="ping-badge"><i class="fas fa-wifi"></i> 14 ms</span>
-                    </div>
-                    <div class="server-body">
-                        <h3 class="server-name">LAGGER #2 [Mirage Only 5v5]</h3>
-                        <div class="server-map-info">
-                            <span><i class="fas fa-map"></i> de_mirage</span>
-                            <span><i class="fas fa-fire"></i> Active ELO</span>
-                        </div>
-                        
-                        <div class="player-bar-container">
-                            <div class="player-count-flex">
-                                <span>Онлайн Тоглогчид</span>
-                                <span><strong class="live-player-count" data-max="10">10</strong> / 10</span>
-                            </div>
-                            <div class="player-bar">
-                                <div class="player-bar-fill" style="width: 100%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="server-actions">
-                            <div class="ip-box" data-ip="cs2.lagger.mn:27016">
-                                <span>cs2.lagger.mn:27016</span>
-                                <i class="fas fa-copy copy-icon"></i>
-                            </div>
-                            <a href="steam://connect/cs2.lagger.mn:27016" class="btn-primary" style="padding: 0.6rem 1rem;">
-                                <i class="fas fa-play"></i> Join
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3: Retake -->
-                <div class="server-card" data-category="retake">
-                    <div class="server-thumb">
-                        <img src="assets/images/map_dust2.jpg" alt="Retake Map">
-                        <span class="server-badge" style="background: rgba(59, 130, 246, 0.8);">RETAKE 128TICK</span>
-                        <span class="ping-badge"><i class="fas fa-wifi"></i> 15 ms</span>
-                    </div>
-                    <div class="server-body">
-                        <h3 class="server-name">LAGGER #3 [Instant Retake]</h3>
-                        <div class="server-map-info">
-                            <span><i class="fas fa-map"></i> Active Duty Pool</span>
-                            <span><i class="fas fa-bolt"></i> Fast Respawn</span>
-                        </div>
-                        
-                        <div class="player-bar-container">
-                            <div class="player-count-flex">
-                                <span>Онлайн Тоглогчид</span>
-                                <span><strong class="live-player-count" data-max="9">7</strong> / 9</span>
-                            </div>
-                            <div class="player-bar">
-                                <div class="player-bar-fill" style="width: 77%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="server-actions">
-                            <div class="ip-box" data-ip="cs2.lagger.mn:27017">
-                                <span>cs2.lagger.mn:27017</span>
-                                <i class="fas fa-copy copy-icon"></i>
-                            </div>
-                            <a href="steam://connect/cs2.lagger.mn:27017" class="btn-primary" style="padding: 0.6rem 1rem;">
-                                <i class="fas fa-play"></i> Join
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4: Deathmatch FFA -->
-                <div class="server-card" data-category="dm">
-                    <div class="server-thumb">
-                        <img src="assets/images/map_mirage.jpg" alt="DM Map">
-                        <span class="server-badge" style="background: rgba(239, 68, 68, 0.8);">WARMUP FFA DM</span>
-                        <span class="ping-badge"><i class="fas fa-wifi"></i> 10 ms</span>
-                    </div>
-                    <div class="server-body">
-                        <h3 class="server-name">LAGGER #4 [FFA Deathmatch]</h3>
-                        <div class="server-map-info">
-                            <span><i class="fas fa-map"></i> de_mirage</span>
-                            <span><i class="fas fa-crosshair"></i> HS Only / Multi-weapon</span>
-                        </div>
-                        
-                        <div class="player-bar-container">
-                            <div class="player-count-flex">
-                                <span>Онлайн Тоглогчид</span>
-                                <span><strong class="live-player-count" data-max="18">16</strong> / 18</span>
-                            </div>
-                            <div class="player-bar">
-                                <div class="player-bar-fill" style="width: 88%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="server-actions">
-                            <div class="ip-box" data-ip="cs2.lagger.mn:27018">
-                                <span>cs2.lagger.mn:27018</span>
-                                <i class="fas fa-copy copy-icon"></i>
-                            </div>
-                            <a href="steam://connect/cs2.lagger.mn:27018" class="btn-primary" style="padding: 0.6rem 1rem;">
-                                <i class="fas fa-play"></i> Join
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5: Surf Utopia -->
-                <div class="server-card" data-category="surf">
-                    <div class="server-thumb">
-                        <img src="assets/images/map_surf.jpg" alt="Surf Map">
-                        <span class="server-badge" style="background: rgba(139, 92, 246, 0.8);">SURF & BHOP</span>
-                        <span class="ping-badge"><i class="fas fa-wifi"></i> 18 ms</span>
-                    </div>
-                    <div class="server-body">
-                        <h3 class="server-name">LAGGER #5 [Surf Easy & Timer]</h3>
-                        <div class="server-map-info">
-                            <span><i class="fas fa-map"></i> surf_utopia_v3</span>
-                            <span><i class="fas fa-stopwatch"></i> CKTimer Rankings</span>
-                        </div>
-                        
-                        <div class="player-bar-container">
-                            <div class="player-count-flex">
-                                <span>Онлайн Тоглогчид</span>
-                                <span><strong class="live-player-count" data-max="20">14</strong> / 20</span>
-                            </div>
-                            <div class="player-bar">
-                                <div class="player-bar-fill" style="width: 70%;"></div>
-                            </div>
-                        </div>
-
-                        <div class="server-actions">
-                            <div class="ip-box" data-ip="cs2.lagger.mn:27019">
-                                <span>cs2.lagger.mn:27019</span>
-                                <i class="fas fa-copy copy-icon"></i>
-                            </div>
-                            <a href="steam://connect/cs2.lagger.mn:27019" class="btn-primary" style="padding: 0.6rem 1rem;">
-                                <i class="fas fa-play"></i> Join
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+      </div>
+      <div class="hob-card" onclick="navigatePage('servers')">
+        <span class="hob-icon">💀</span>
+        <div class="hob-info">
+          <span class="hob-label">DEATHMATCH (2 match)</span>
+          <span class="hob-val"><strong id="onlineDmCount">34</strong> / 40</span>
         </div>
-    </section>
-
-    <!-- VIP Store Section -->
-    <section id="vip" class="section store-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">VIP PERKS & STORE</span>
-                <h2 class="section-title">VIP Багцууд ба Боломжууд</h2>
-                <p class="section-desc">Серверт давуу эрх эдлэн тусгай арьс skin (`!ws`), хутга (`!knife`), reserved slot болон бусад олон бэлгийг аваарай.</p>
-            </div>
-
-            <div class="vip-grid">
-                
-                <!-- Bronze VIP -->
-                <div class="vip-card">
-                    <div>
-                        <h3 class="vip-name" style="color: #CD7F32;">BRONZE VIP</h3>
-                        <div class="vip-price">10,000₮ <span>/ сар</span></div>
-                        <ul class="vip-features">
-                            <li><i class="fas fa-check"></i> Reserved Slot (Дүүрсэн үед орох)</li>
-                            <li><i class="fas fa-check"></i> `!ws` Custom Weapon Skins access</li>
-                            <li><i class="fas fa-check"></i> VIP Prefix чат дээр</li>
-                            <li><i class="fas fa-check"></i> +5% Extra XP болон ELO</li>
-                        </ul>
-                    </div>
-                    <button class="btn-outline" onclick="openVipModal('Bronze', '10,000₮')">Авах</button>
-                </div>
-
-                <!-- Silver VIP -->
-                <div class="vip-card">
-                    <div>
-                        <h3 class="vip-name" style="color: #C0C0C0;">SILVER VIP</h3>
-                        <div class="vip-price">20,000₮ <span>/ сар</span></div>
-                        <ul class="vip-features">
-                            <li><i class="fas fa-check"></i> Bronze VIP-ийн бүх боломж</li>
-                            <li><i class="fas fa-check"></i> `!knife` Бүх хутга сонгох</li>
-                            <li><i class="fas fa-check"></i> `!gloves` Custom бээлий</li>
-                            <li><i class="fas fa-check"></i> Join Notification онцгой мэдээлэл</li>
-                            <li><i class="fas fa-check"></i> +10% Extra XP</li>
-                        </ul>
-                    </div>
-                    <button class="btn-outline" onclick="openVipModal('Silver', '20,000₮')">Авах</button>
-                </div>
-
-                <!-- Gold VIP (Featured) -->
-                <div class="vip-card featured">
-                    <span class="popular-badge">ХАМГИЙН ЭРЭЛТТЭЙ</span>
-                    <div>
-                        <h3 class="vip-name" style="color: var(--gold-accent);">GOLD VIP</h3>
-                        <div class="vip-price">35,000₮ <span>/ сар</span></div>
-                        <ul class="vip-features">
-                            <li><i class="fas fa-check"></i> Silver VIP-ийн бүх боломж</li>
-                            <li><i class="fas fa-check"></i> Custom Agent Skins (Тусгай дүрүүд)</li>
-                            <li><i class="fas fa-check"></i> Animated Neon Chat Tag</li>
-                            <li><i class="fas fa-check"></i> Vote Kick & Mute халдашгүй эрх</li>
-                            <li><i class="fas fa-check"></i> Discord-д VIP Special Role</li>
-                        </ul>
-                    </div>
-                    <button class="btn-primary" onclick="openVipModal('Gold', '35,000₮')">Авах</button>
-                </div>
-
-                <!-- Platinum VIP -->
-                <div class="vip-card">
-                    <div>
-                        <h3 class="vip-name" style="color: #E5E4E2;">PLATINUM VIP</h3>
-                        <div class="vip-price">60,000₮ <span>/ сар</span></div>
-                        <ul class="vip-features">
-                            <li><i class="fas fa-check"></i> Gold VIP-ийн бүх эрх</li>
-                            <li><i class="fas fa-check"></i> Хязгааргүй хугацаа (Lifetime)</li>
-                            <li><i class="fas fa-check"></i> Custom Sound Effects (`!music`)</li>
-                            <li><i class="fas fa-check"></i> VIP Server Control & Maps Vote</li>
-                            <li><i class="fas fa-check"></i> Тэмцээний үнэгүй билет</li>
-                        </ul>
-                    </div>
-                    <button class="btn-outline" onclick="openVipModal('Platinum', '60,000₮')">Авах</button>
-                </div>
-
-            </div>
+      </div>
+      <div class="hob-card" onclick="navigatePage('servers')">
+        <span class="hob-icon">🏃</span>
+        <div class="hob-info">
+          <span class="hob-label">KZ / BHOP (1 match)</span>
+          <span class="hob-val"><strong id="onlineKzCount">18</strong> / 32</span>
         </div>
-    </section>
-
-    <!-- Leaderboard Section -->
-    <section id="leaderboard" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">TOP PLAYERS</span>
-                <h2 class="section-title">Серверийн Шилдэг Тоглогчид</h2>
-                <p class="section-desc">Тэргүүн байранд жагссан тоглогчдод сар бүр сарын VIP болон CS2 арьсны бэлэг гардуулна.</p>
-            </div>
-
-            <div class="leaderboard-table-wrapper">
-                <div class="leaderboard-header-bar">
-                    <h3 style="font-size:1.1rem; font-weight:700;">Season 4 Leaderboard</h3>
-                    <input type="text" id="leaderboard-search" class="search-input" placeholder="Тоглогч хайх (Nick)...">
-                </div>
-
-                <table class="leaderboard-table">
-                    <thead>
-                        <tr>
-                            <th># Rank</th>
-                            <th>Тоглогч</th>
-                            <th>K/D Ratio</th>
-                            <th>Headshot %</th>
-                            <th>Нийт Kill</th>
-                            <th>Цол (Rank)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><span class="rank-badge rank-1">1</span></td>
-                            <td>
-                                <div class="player-cell">
-                                    <div class="player-avatar">S</div>
-                                    <span>Lagger.!</span>
-                                </div>
-                            </td>
-                            <td><span class="kd-ratio">2.45</span></td>
-                            <td>72%</td>
-                            <td>4,892</td>
-                            <td><span style="color:var(--gold-accent); font-weight:700;">Global Elite</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge rank-2">2</span></td>
-                            <td>
-                                <div class="player-cell">
-                                    <div class="player-avatar" style="background:#3B82F6;">B</div>
-                                    <span>b1t_god</span>
-                                </div>
-                            </td>
-                            <td><span class="kd-ratio">2.12</span></td>
-                            <td>68%</td>
-                            <td>4,120</td>
-                            <td><span style="color:#C0C0C0; font-weight:700;">Supreme</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge rank-3">3</span></td>
-                            <td>
-                                <div class="player-cell">
-                                    <div class="player-avatar" style="background:#10B981;">Z</div>
-                                    <span>ZywOo_UB</span>
-                                </div>
-                            </td>
-                            <td><span class="kd-ratio">1.98</span></td>
-                            <td>64%</td>
-                            <td>3,950</td>
-                            <td><span style="color:#CD7F32; font-weight:700;">Supreme</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge rank-other">4</span></td>
-                            <td>
-                                <div class="player-cell">
-                                    <div class="player-avatar" style="background:#8B5CF6;">K</div>
-                                    <span>Karrigan_MN</span>
-                                </div>
-                            </td>
-                            <td><span class="kd-ratio">1.75</span></td>
-                            <td>59%</td>
-                            <td>3,410</td>
-                            <td><span>LEM</span></td>
-                        </tr>
-                        <tr>
-                            <td><span class="rank-badge rank-other">5</span></td>
-                            <td>
-                                <div class="player-cell">
-                                    <div class="player-avatar" style="background:#EC4899;">N</div>
-                                    <span>Niko_Deagle</span>
-                                </div>
-                            </td>
-                            <td><span class="kd-ratio">1.68</span></td>
-                            <td>81%</td>
-                            <td>3,200</td>
-                            <td><span>LEM</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+      </div>
+      <div class="hob-card" onclick="navigatePage('servers')">
+        <span class="hob-icon">⚔️</span>
+        <div class="hob-info">
+          <span class="hob-label">5v5 COMPETITIVE (40 match)</span>
+          <span class="hob-val"><strong id="onlineCompCount">380</strong> / 400</span>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+  <div class="hero-stats-bar">
+    <div class="stat-item">
+      <span class="stat-num" data-count="473" id="heroTotalOnlineNum">473</span>
+      <span class="stat-label">Нийт Онлайн</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" data-count="12480">12,480</span>
+      <span class="stat-label">Нийт тоглогч</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" data-count="8492340">8,492,340</span>
+      <span class="stat-label">Нийт алалт</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" data-count="284920">284,920</span>
+      <span class="stat-label">Нийт тоглолт</span>
+    </div>
+  </div>
+</section>
 
-    <!-- Rules & FAQ Accordion Section -->
-    <section id="rules" class="section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-tag">SERVER RULES & COMMANDS</span>
-                <h2 class="section-title">Серверийн Дүрэм ба Командууд</h2>
-                <p class="section-desc">Серверт тоглохдоо баримтлах үндсэн зарчмууд болон хэрэглэгдэх чат командууд.</p>
-            </div>
+<!-- ===== MONGOLZ LIVE ARENA & SPONSOR SCREEN ===== -->
+<section class="arena-section page-section" id="arena" data-page-id="arena">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">MZ LIVE ARENA & BROADCAST</div>
+      <h2 class="section-title">Шууд Дамжуулалт & Дэлгэц</h2>
+      <p class="section-desc">Сервер доторх 5v5 GOTV шууд тоглолт, Stream сувгууд болон хамтрагч байгууллагуудын сурталчилгаа</p>
+    </div>
 
-            <div class="accordion">
-                
-                <div class="accordion-item active">
-                    <div class="accordion-header">
-                        <span>1. Серверийн Ерөнхий Дүрэм болон Хориглох Зүйлс</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </div>
-                    <div class="accordion-content">
-                        <p>Аливаа төрлийн чит (AIM, WH, Spinbot, Script), бусдыг доромжлох, микрофоноор чанга дуу чимээ гаргах, токсик зан авир гаргахыг хатуу хориглоно. Зөрчсөн тохиолдолд шууд перм бан өгнө.</p>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <div class="accordion-header">
-                        <span>2. Чат дээр хэрэглэгдэх үндсэн командууд</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </div>
-                    <div class="accordion-content">
-                        <p><strong>!ws</strong> - Weapon skin тохируулах меню<br>
-                        <strong>!knife</strong> - Хутга сонгох меню<br>
-                        <strong>!gloves</strong> - Бээлийний skin тохируулах<br>
-                        <strong>!rtv</strong> - Map солих санал асуулга эхлүүлэх<br>
-                        <strong>!vip</strong> - VIP цэс нээх</p>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <div class="accordion-header">
-                        <span>3. VIP багц авсны дараа эрх хэзээ идэвхжих вэ?</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </div>
-                    <div class="accordion-content">
-                        <p>Discord сервер дээр болон манай админууд руу гүйлгээний утга дээр SteamID64-өө бичин илгээснээс хойш 1-5 минутын дотор автомат системээр таны эрх сервер дээр идэвхжинэ.</p>
-                    </div>
-                </div>
-
-                <div class="accordion-item">
-                    <div class="accordion-header">
-                        <span>4. Сар бүрийн тэмцээн ба шагналын фондод хэрхэн оролцох вэ?</span>
-                        <i class="fas fa-chevron-down accordion-icon"></i>
-                    </div>
-                    <div class="accordion-content">
-                        <p>Сар бүрийн 1-нд Leaderboard шинэчлэгддэг бөгөөд Top 3-т орсон тоглогчид автоматаар сарын VIP ба CS2 Skin шагнал авах эрхтэй болно.</p>
-                    </div>
-                </div>
-
-            </div>
+    <div class="arena-frame">
+      <!-- Top Control Bar -->
+      <div class="arena-topbar">
+        <div class="at-left">
+          <span class="at-live-badge" id="arenaLiveBadge">
+            <span class="at-dot"></span>
+            <span id="arenaBadgeText">GOTV LIVE</span>
+          </span>
+          <span class="at-channel-title" id="arenaChannelTitle">5v5 Competitive #01 · de_mirage</span>
+          <span class="at-viewers">👁️ <span id="arenaViewerCount">342</span> үзэгч</span>
         </div>
-    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-grid">
-                <div class="footer-brand">
-                    <a href="#" class="brand-logo">
-                        <span class="logo-badge">CS2</span>
-                        <span class="brand-name">LAGGER<span class="orange-text">.MN</span></span>
-                    </a>
-                    <p>Монголын хамгийн өндөр үзүүлэлттэй, бага лагтай Counter-Strike 2 сервер сүлжээ.</p>
-                </div>
-
-                <div>
-                    <h4 class="footer-title">Холбоосууд</h4>
-                    <ul class="footer-links">
-                        <li><a href="#hero">Нүүр</a></li>
-                        <li><a href="#servers">Серверүүд</a></li>
-                        <li><a href="#vip">VIP Стор</a></li>
-                        <li><a href="#leaderboard">Чансаа</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="footer-title">Серверүүд</h4>
-                    <ul class="footer-links">
-                        <li><a href="#servers">5v5 Matchmaking</a></li>
-                        <li><a href="#servers">Retake 128Tick</a></li>
-                        <li><a href="#servers">FFA Deathmatch</a></li>
-                        <li><a href="#servers">Surf & BHop</a></li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h4 class="footer-title">Сошиал Канал</h4>
-                    <ul class="footer-links">
-                        <li><a href="https://discord.gg" target="_blank"><i class="fab fa-discord"></i> Discord Server</a></li>
-                        <li><a href="https://steamcommunity.com" target="_blank"><i class="fab fa-steam"></i> Steam Group</a></li>
-                        <li><a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i> Facebook Page</a></li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <p>&copy; 2026 LAGGER CS2 Community. All rights reserved.</p>
-                <p>Designed with <i class="fas fa-heart" style="color:var(--orange-primary);"></i> for Mongolian CS2 Gamers.</p>
-            </div>
+        <div class="at-modes">
+          <button class="at-mode-btn active" onclick="setArenaMode('gotv')" data-arenamode="gotv">📡 GOTV 5v5</button>
+          <button class="at-mode-btn" onclick="setArenaMode('stream')" data-arenamode="stream">🎥 Stream POV</button>
+          <button class="at-mode-btn" onclick="setArenaMode('sponsor')" data-arenamode="sponsor">📢 Сурталчилгаа</button>
+          <button class="at-auto-btn active" id="arenaAutoBtn" onclick="toggleArenaAutoRotate()" title="Сурталчилгаа болон Live автоматаар солигдох">🔄 Auto: ON</button>
         </div>
-    </footer>
+      </div>
 
-    <!-- JavaScript -->
-    <script src="js/main.js"></script>
+      <!-- Main 2-Column Broadcast Layout -->
+      <div class="arena-grid">
+
+        <!-- Screen Viewport -->
+        <div class="arena-screen" id="arenaScreen">
+
+          <!-- MODE 1: GOTV 2D LIVE RADAR & HUD -->
+          <div class="arena-view active" id="arenaView-gotv">
+            <div class="gotv-scoreboard">
+              <div class="gs-team ct">
+                <span class="gs-side">CT</span>
+                <span class="gs-name" id="gotvTeamCT">Team bLitz</span>
+                <span class="gs-score" id="gotvScoreCT">11</span>
+              </div>
+              <div class="gs-center">
+                <div class="gs-round" id="gotvRoundText">ROUND 21 / 24</div>
+                <div class="gs-timer" id="gotvTimerText">01:14</div>
+                <div class="gs-map-pill" id="gotvMapPill">de_mirage · 128-tick</div>
+              </div>
+              <div class="gs-team t">
+                <span class="gs-score" id="gotvScoreT">9</span>
+                <span class="gs-name" id="gotvTeamT">Team Senzu</span>
+                <span class="gs-side">T</span>
+              </div>
+            </div>
+
+            <div class="gotv-stage">
+              <!-- Left CT Alive Players -->
+              <div class="gotv-roster ct" id="gotvRosterCT"></div>
+
+              <!-- Center Tactical Radar Canvas -->
+              <div class="gotv-radar-box">
+                <canvas id="gotvRadarCanvas" width="440" height="300"></canvas>
+                <div class="gotv-caster-ticker" id="gotvEventTicker">
+                  🎙️ <strong>GOTV:</strong> bLitz [AK-47]-аар A-Site дээр 2 тоглогч унагалаа!
+                </div>
+              </div>
+
+              <!-- Right T Alive Players -->
+              <div class="gotv-roster t" id="gotvRosterT"></div>
+            </div>
+          </div>
+
+          <!-- MODE 2: STREAM POV / 3D SPECTATING (MATCH #1, #2, #3 ONLY) -->
+          <div class="arena-view" id="arenaView-stream">
+            <div class="stream-url-bar">
+              <input type="text" id="quickVideoUrlInput" class="steam-input" style="flex:1;padding:7px 12px;font-size:0.82rem" placeholder="🔗 YouTube, Twitch эсвэл MP4 видео линк хуулж тавиад Тоглуулах дарна уу..." />
+              <button class="btn-topup-main" style="padding:7px 14px;font-size:0.82rem" onclick="playQuickVideoLink()">▶️ Видео Тоглуулах</button>
+              <button class="at-mode-btn" style="padding:7px 10px;font-size:0.78rem" onclick="resetToPovCanvas()">🎮 3D POV Камер</button>
+            </div>
+            <!-- 10-Player Clickable Spectator Switcher for Match #1, #2, #3 -->
+            <div class="pov-player-strip" id="povPlayerStrip">
+              <!-- Populated by JS with the 10 players of active Match #1, #2, or #3 -->
+            </div>
+            <div class="stream-stage" id="streamStage">
+              <div id="customStreamEmbed" style="display:none;width:100%;height:380px;background:#000"></div>
+              <canvas id="streamPovCanvas" width="760" height="390"></canvas>
+              <div class="stream-overlay-top" id="streamOverlayTop">
+                <span class="so-tag" id="streamServerTag">🎥 3D POV LIVE · SERVER #01 (de_mirage)</span>
+                <span class="so-player" id="streamPovPlayer">🎯 Spectating: bLitz [CT]</span>
+              </div>
+              <div class="stream-overlay-bottom" id="streamOverlayBottom">
+                <div class="so-hud-item">❤️ <strong id="streamHpVal">100</strong> HP</div>
+                <div class="so-hud-item">🛡️ <strong id="streamArmorVal">100</strong> KEVLAR</div>
+                <div class="so-hud-item gold">🔫 <strong id="streamWepVal">AK-47 | Wild Lotus</strong> · <span id="streamAmmoVal">30 / 90</span></div>
+                <div class="so-hud-item">⚔️ K/D: <strong id="streamKdVal">21/11</strong></div>
+                <button class="so-next-pov" onclick="cycleStreamSpectator()">⏭️ Тоглогч солих</button>
+                <button class="so-gotv-btn" onclick="launchCs2GotvConnect()" title="CS2 тоглоомоор GOTV рүү шууд Spectator болж орох">🎮 CS2 GOTV</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- MODE 3: CLEAN SPONSOR / AD BILLBOARD -->
+          <div class="arena-view" id="arenaView-sponsor">
+            <div class="sponsor-stage" id="sponsorStage">
+              <!-- Populated dynamically by JS -->
+            </div>
+          </div>
+
+          <!-- Subtle Bottom Sponsor Ticker Bar (Always visible cleanly) -->
+          <div class="arena-bottom-bar">
+            <div class="abb-left">
+              <span class="abb-tag">PARTNER</span>
+              <span class="abb-text" id="arenaPartnerTicker">⚡ VIP+ багц 90 хоногоор авахад -20% хямдралтай · Дэлгүүр хэсгээс шууд идэвхжүүлээрэй!</span>
+            </div>
+            <div class="abb-right">
+              <button class="abb-rent-btn" onclick="openAdBookingModal()">📢 Энд сурталчилгаа байршуулах</button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right Sidebar: Channels & Ad Slots -->
+        <div class="arena-sidebar">
+          <div class="as-header">🎥 3D POV ОНЦЛОХ ТОГЛОЛТ (#01–#03)</div>
+          <div class="as-channel-list" id="arenaChannelList">
+            <!-- Populated by JS -->
+          </div>
+          <div style="padding:8px 10px;border-radius:8px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.28);font-size:0.74rem;color:#86efac;line-height:1.35">
+            ⚡ <strong>Host Load Protection:</strong> 3D POV & GOTV зөвхөн <strong>5v5 Match #01, #02, #03</strong> дээр ажиллана. Server #04–#40 нь 0% lag-гүй хөнгөн горимтой.
+          </div>
+
+          <div class="as-ad-card">
+            <div class="as-ad-badge">📢 СУРТАЛЧИЛГААНЫ ОРОН ЗАЙ</div>
+            <div class="as-ad-title">Таны баннер эсвэл видео энд гарна</div>
+            <div class="as-ad-desc">Өдөрт 12,000+ CS2 тоглогч ордог дэлгэц дээр өөрийн бренд, Discord, дэлгүүрийг сурталчлаарай.</div>
+            <button class="as-ad-btn" onclick="openAdBookingModal()">⚡ Сурталчилгаа захиалах</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AD BOOKING MODAL ===== -->
+<div class="mz-modal-backdrop" id="adBookingModal" onclick="if(event.target===this)closeAdBookingModal()">
+  <div class="mz-modal">
+    <div class="mz-modal-header">
+      <div class="mz-modal-title">
+        <span>📢 ДЭЛГЭЦ ДЭЭР СУРТАЛЧИЛГАА БАЙРШУУЛАХ</span>
+      </div>
+      <button class="mz-modal-close" onclick="closeAdBookingModal()">✕</button>
+    </div>
+    <div class="mz-modal-body">
+      <p class="mz-modal-sub">Таны сурталчилгаа The Mongolz Live Arena дэлгэц дээр шууд гарч бүх тоглогчдод харагдана. Доор мэдээллээ оруулаад дэлгэц дээр шууд туршаад үзээрэй!</p>
+      <div class="steam-form-group">
+        <label>Байгууллага / Брендийн нэр</label>
+        <input type="text" id="adBrandInput" class="steam-input" placeholder="Жнь: HITECH GAMING STORE" value="MONGOLZ PRO GEAR" />
+      </div>
+      <div class="steam-form-group">
+        <label>Сурталчилгааны Гарчиг (Headline)</label>
+        <input type="text" id="adTitleInput" class="steam-input" placeholder="Жнь: CS2 360Hz Монитор 20% Хямдрал!" value="CS2 Pro Хулгана & 360Hz Монитор -20% SALE!" />
+      </div>
+      <div class="steam-form-group">
+        <label>🎬 Сурталчилгааны Видео эсвэл Зургийн Линк (YouTube / MP4 / Twitch / Зураг)</label>
+        <input type="text" id="adMediaUrlInput" class="steam-input" placeholder="Жнь: https://www.youtube.com/watch?v=... эсвэл .mp4 / .jpg линк хуулж тавих" value="" />
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+          <span style="font-size:0.74rem;color:var(--text-muted)">Бэлэн видео линк турших:</span>
+          <button type="button" class="sp-chip" onclick="document.getElementById('adMediaUrlInput').value='https://www.youtube.com/watch?v=c80dVYcL69E'">🎬 CS2 Official Trailer (YouTube)</button>
+          <button type="button" class="sp-chip" onclick="document.getElementById('adMediaUrlInput').value='https://www.youtube.com/watch?v=nSE38xjMLqE'">🏆 The MongolZ Highlight (YouTube)</button>
+        </div>
+      </div>
+      <div class="steam-form-group">
+        <label>Дэлгэрэнгүй тайлбар & Промо код</label>
+        <input type="text" id="adDescInput" class="steam-input" placeholder="Дэлгэрэнгүй мэдээлэл..." value="The Mongolz серверийн бүх тоглогчдод промо код: MONGOLZ2026" />
+      </div>
+      <div class="topup-summary">
+        <div>
+          <div class="ts-label">Байршуулах үнэ (24 цаг):</div>
+          <div class="ts-price">2,000 MZ Coin</div>
+        </div>
+        <div style="text-align:right">
+          <div class="ts-label">Харагдах тоо:</div>
+          <div class="ts-coins">~12,500+ үзэлт</div>
+        </div>
+      </div>
+      <button class="btn-confirm-topup" onclick="submitCustomAd()">
+        📺 Дэлгэц дээр шууд байршуулах (2,000 MZ)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SERVERS & 5v5 MATCHES PAGE ===== -->
+<section class="servers-section page-section" id="servers" data-page-id="servers">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">СЕРВЕРҮҮД · 45 СЕРВЕР ОНЛАЙН</div>
+      <h2 class="section-title">Public · Deathmatch · KZ/Bhop & 5v5 Competitive</h2>
+      <p class="section-desc">2 Public (24 хүнтэй), 2 Deathmatch, 1 KZ/Bhop болон 40 ширхэг 5v5 Competitive сервер — тус бүрийн ард тоглож буй map-ийн зураг харагдана</p>
+    </div>
+
+    <!-- Community Servers: 2 Public (24 slot), 2 Deathmatch, 1 KZ/Bhop (Rendered by JS with Map Backgrounds) -->
+    <div class="servers-grid servers-grid-5" id="communityServersGrid"></div>
+
+    <!-- 5v5 Competitive Summary Bar -->
+    <div class="comp-summary-bar" style="margin-top:36px">
+      <div class="csb-left">
+        <span class="csb-badge">⚔️ 40 СЕРВЕР</span>
+        <div>
+          <div class="csb-title">5v5 COMPETITIVE MATCHMAKING</div>
+          <div class="csb-sub">128-tick · ELO систем · GOTV Live үзэх · Идэвхтэй: <strong id="activeMatches">37 идэвхтэй</strong></div>
+        </div>
+      </div>
+      <div class="csb-right">
+        <a href="#matches" class="card-btn btn-blue" style="width:auto;padding:10px 18px" onclick="document.getElementById('matches').scrollIntoView({behavior:'smooth'});return false;">
+          ⬇️ 40 Match Харах
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LIVE MATCHES (40x 5v5) ===== -->
+<section class="matches-section page-section" id="matches" data-page-id="servers">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">5v5 COMPETITIVE · 40 MATCHES</div>
+      <h2 class="section-title">Шууд тоглолтууд (40 Match)</h2>
+      <p class="section-desc">Тоглолт бүрийн ард тоглож буй map-ийн зураг гарна · LIVE match дээр дарж шууд үзнэ үү</p>
+    </div>
+
+    <div class="matches-controls">
+      <div class="match-filter-tabs" role="tablist">
+        <button class="filter-tab active" onclick="filterMatches('all')" data-filter="all">Бүгд <span class="tab-count" id="countAll">40</span></button>
+        <button class="filter-tab" onclick="filterMatches('live')" data-filter="live">Идэвхтэй <span class="tab-count" id="countLive">37</span></button>
+        <button class="filter-tab" onclick="filterMatches('waiting')" data-filter="waiting">Хүлээж байна <span class="tab-count" id="countWaiting">3</span></button>
+      </div>
+      <div class="matches-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="matchSearch" placeholder="Тоглогч хайх..." oninput="searchMatches(this.value)" />
+      </div>
+    </div>
+
+    <div class="matches-grid" id="matchesGrid">
+      <!-- filled by JS -->
+    </div>
+
+    <div class="matches-pagination">
+      <button class="page-btn" id="prevPage" onclick="changePage(-1)">← Өмнөх</button>
+      <span class="page-info" id="pageInfo">1 / 4</span>
+      <button class="page-btn" id="nextPage" onclick="changePage(1)">Дараах →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEADERBOARD ===== -->
+<!-- ===== SKIN CHANGER ===== -->
+<section class="skinchanger-section page-section" id="skinchanger" data-page-id="skinchanger">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">SKIN CHANGER & PLAYER MODELS</div>
+      <h2 class="section-title">Зэвсэг, Хутга, Бээлий & Player Model солих</h2>
+      <p class="section-desc">Бүх төрлийн буу, 19 хутга, 8 бээлий болон олон төрлийн Player Model — VIP+ гишүүд Skin-ийхээ өнгийг тусгайлан өөрчилнө!</p>
+    </div>
+
+    <div class="sc-layout">
+
+      <!-- Left: Weapon & Agent Selector -->
+      <div class="sc-sidebar">
+        <div class="sc-sidebar-title">Зэвсэг & Агент сонгох (125+)</div>
+        <div class="sc-weapon-tabs">
+          <button class="sc-wep-tab active" onclick="selectWeaponCat('rifles')" data-cat="rifles">🔫 Буу (11)</button>
+          <button class="sc-wep-tab" onclick="selectWeaponCat('pistols')" data-cat="pistols">🔫 Гар буу (10)</button>
+          <button class="sc-wep-tab" onclick="selectWeaponCat('smgs')" data-cat="smgs">⚡ SMG (7)</button>
+          <button class="sc-wep-tab" onclick="selectWeaponCat('heavy')" data-cat="heavy">💥 Хүнд (6)</button>
+          <button class="sc-wep-tab" onclick="selectWeaponCat('knives')" data-cat="knives">🗡️ Хутга (19)</button>
+          <button class="sc-wep-tab" onclick="selectWeaponCat('gloves')" data-cat="gloves">🧤 Бээлий (8)</button>
+          <button class="sc-wep-tab sc-wep-tab-agents" id="scAgentsTabBtn" onclick="selectWeaponCat('agents')" data-cat="agents">🧍 Player Models (67+)</button>
+        </div>
+        <input type="text" id="weaponSearchInput" class="steam-input" style="padding:7px 10px;font-size:0.8rem" placeholder="🔍 Зэвсэг / Агент хайх..." oninput="filterWeaponList(this.value)" />
+        <div class="sc-weapon-list" id="weaponList"></div>
+      </div>
+
+      <!-- Center: 3D Interactive Skin & Agent Preview -->
+      <div class="sc-preview-wrap">
+        <div class="sc-preview-box" id="previewBox">
+          <div class="sc-preview-bg"></div>
+          <div class="sc-3d-badge" id="sc3dHint">🖱️ Чирж 3D эргүүлэх · Scroll Zoom</div>
+          <div class="sc-3d-toolbar">
+            <button type="button" class="sc-3d-btn" id="sc3dSpinBtn" onclick="toggle3DAutoSpin()" title="360° Автоматаар эргүүлэх">🔄 360°</button>
+            <button type="button" class="sc-3d-btn" onclick="zoom3DSkin(0.2)" title="Томруулах">🔍+</button>
+            <button type="button" class="sc-3d-btn" onclick="zoom3DSkin(-0.2)" title="Жижигрүүлэх">🔍-</button>
+            <button type="button" class="sc-3d-btn" onclick="reset3DSkinView()" title="Анхны байрлал">↺</button>
+          </div>
+          <div class="sc-preview-weapon sc-3d-stage" id="previewWeapon">
+            <div class="sc-3d-pedestal"></div>
+            <div class="sc-3d-card" id="sc3dCard">
+              <div class="sc-weapon-svg" id="weaponSvg"></div>
+              <div class="sc-3d-sheen" id="sc3dSheen"></div>
+            </div>
+          </div>
+          <div class="sc-preview-info">
+            <div class="sc-preview-name" id="previewName">AK-47</div>
+            <div class="sc-preview-skin" id="previewSkin">Vanilla</div>
+            <div class="sc-preview-rarity" id="previewRarity"><span class="rarity-dot"></span> Consumer Grade</div>
+          </div>
+          <div class="sc-preview-controls">
+            <button class="sc-btn-inspect" onclick="toggleStatTrak()" id="statTrakBtn">🔢 StatTrak™: OFF</button>
+            <button class="sc-btn-inspect" onclick="inspectSkin()">🔍 Inspect</button>
+            <button class="sc-btn-equip" id="equipBtn" onclick="equipSkin()">⚡ Equip</button>
+          </div>
+        </div>
+
+        <!-- Float / Wear Slider -->
+        <div class="sc-float-box">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="sc-float-title" style="margin-bottom:0">Float Value Тохируулах</div>
+            <button class="rf-btn" onclick="equipFullProLoadout()" style="border-color:var(--gold);color:var(--gold-bright)">⚡ Бүх буунд Pro Skin зүүх</button>
+          </div>
+          <div class="sc-float-bar-wrap">
+            <div class="sc-float-track">
+              <div class="sc-float-zones">
+                <span class="fz fz-fn">FN</span>
+                <span class="fz fz-mw">MW</span>
+                <span class="fz fz-ft">FT</span>
+                <span class="fz fz-ww">WW</span>
+                <span class="fz fz-bs">BS</span>
+              </div>
+              <div class="sc-float-indicator" id="floatIndicator" style="left:12%"></div>
+            </div>
+            <input type="range" id="customFloatSlider" min="0.0001" max="0.9900" step="0.0005" value="0.0120" oninput="onCustomFloatChange(this.value)" style="width:100%;margin-top:6px;accent-color:var(--purple);cursor:pointer" />
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">
+            <div class="sc-float-val" id="floatVal">0.0241</div>
+            <div class="sc-wear-label" id="wearLabel">Factory New</div>
+          </div>
+        </div>
+
+        <!-- VIP+ Exclusive Skin Color Customizer -->
+        <div class="sc-vip-color-box" id="vipColorBox">
+          <div class="svc-header">
+            <span class="svc-title">🎨 VIP+ Skin Өнгө Тохируулах</span>
+            <span class="svc-badge" id="vipColorLockBadge">🔒 VIP+ Эрх шаардлагатай</span>
+          </div>
+          <div class="svc-controls">
+            <div class="svc-swatches">
+              <button class="svc-swatch active" style="background:transparent;border:1px dashed #94a3b8" onclick="setVipSkinColor('', this)" title="Өөрийн өнгө (Reset)">✕</button>
+              <button class="svc-swatch" style="background:#f0a800" onclick="setVipSkinColor('#f0a800', this)" title="MongolZ Gold"></button>
+              <button class="svc-swatch" style="background:#ef4444" onclick="setVipSkinColor('#ef4444', this)" title="Crimson Ruby"></button>
+              <button class="svc-swatch" style="background:#3b82f6" onclick="setVipSkinColor('#3b82f6', this)" title="Sapphire Blue"></button>
+              <button class="svc-swatch" style="background:#22c55e" onclick="setVipSkinColor('#22c55e', this)" title="Emerald Green"></button>
+              <button class="svc-swatch" style="background:#a855f7" onclick="setVipSkinColor('#a855f7', this)" title="Royal Purple"></button>
+              <button class="svc-swatch" style="background:#ec4899" onclick="setVipSkinColor('#ec4899', this)" title="Neon Pink"></button>
+              <button class="svc-swatch" style="background:#06b6d4" onclick="setVipSkinColor('#06b6d4', this)" title="Cyber Cyan"></button>
+              <input type="color" id="vipCustomColorPicker" value="#f0a800" onchange="setVipSkinColor(this.value, null)" title="Дурын өнгө сонгох" class="svc-picker" />
+            </div>
+            <button class="svc-upgrade-btn" id="vipColorUpgradeBtn" onclick="navigatePage('shop')">👑 VIP авах</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Skin Grid -->
+      <div class="sc-skins-panel">
+        <div class="sc-skins-header">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+            <div class="sc-skins-title" id="skinsCountTitle">Skin-үүд</div>
+            <input type="text" id="skinSearchInput" class="steam-input" style="padding:5px 10px;font-size:0.78rem;max-width:155px" placeholder="🔍 Skin хайх..." oninput="filterSkinSearch(this.value)" />
+          </div>
+          <div class="sc-rarity-filters" id="rarityFilters">
+            <button class="rf-btn active" onclick="filterRarity('all')" data-rarity="all">Бүгд</button>
+            <button class="rf-btn rf-covert" onclick="filterRarity('covert')" data-rarity="covert">Covert</button>
+            <button class="rf-btn rf-classified" onclick="filterRarity('classified')" data-rarity="classified">Classified</button>
+            <button class="rf-btn rf-restricted" onclick="filterRarity('restricted')" data-rarity="restricted">Restricted</button>
+            <button class="rf-btn rf-mil" onclick="filterRarity('mil')" data-rarity="mil">Mil-Spec</button>
+          </div>
+        </div>
+        <div class="sc-skins-grid" id="skinsGrid"></div>
+      </div>
+
+    </div>
+
+    <!-- Currently Equipped Strip + Server Sync & Custom Skin Upload -->
+    <div class="sc-equipped-strip">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+        <div class="sc-equipped-title" style="margin-bottom:0">
+          ⚡ Одоо тоглуулж байгаа skin-үүд · <span id="realSkinApiStatus" style="color:#4ade80">🖼️ CS2 HD PNG ачаалж байна...</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button type="button" class="rf-btn" onclick="openCustomSkinModal()" style="border-color:rgba(168,85,247,0.55);color:#d8b4fe;padding:6px 12px">
+            ➕ Өөрийн Скин / Зураг Нэмэх
+          </button>
+          <button type="button" class="rf-btn" onclick="openServerSkinExportModal()" style="border-color:rgba(34,197,94,0.55);color:#4ade80;padding:6px 12px">
+            📋 CS2 Сервер рүү Хуулах (!ws / WeaponPaints)
+          </button>
+        </div>
+      </div>
+      <div class="sc-equipped-list" id="equippedList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CUSTOM SKIN / IMAGE UPLOAD MODAL ===== -->
+<div class="mz-modal-backdrop" id="customSkinModal" onclick="if(event.target===this)closeCustomSkinModal()">
+  <div class="mz-modal">
+    <div class="mz-modal-header">
+      <div class="mz-modal-title"><span>➕ ШИНЭ СКИН & ЗУРАГ ХУУЛЖ НЭМЭХ</span></div>
+      <button class="mz-modal-close" onclick="closeCustomSkinModal()">✕</button>
+    </div>
+    <div class="mz-modal-body">
+      <p class="mz-modal-sub">Та дурын CS2 скиний PNG зургийн линкийг хуулж тавих эсвэл компьютерээсээ зураг оруулаад одоо сонгосон зэвсэг (<strong id="csModalWeaponName">AK-47</strong>) дээр шууд нэмэх боломжтой!</p>
+      <div class="steam-form-group">
+        <label>Скиний нэр</label>
+        <input type="text" id="csSkinNameInput" class="steam-input" placeholder="Жнь: MongolZ Gold Edition, Inheritance..." />
+      </div>
+      <div class="steam-form-group">
+        <label>🖼️ Зургийн линк (PNG / JPG / WEBP URL хуулж тавих)</label>
+        <input type="text" id="csSkinImgUrlInput" class="steam-input" placeholder="https://...png" />
+      </div>
+      <div class="steam-form-group">
+        <label>📁 Эсвэл компьютерээсээ PNG зураг сонгох</label>
+        <input type="file" id="csSkinFileInput" accept="image/*" class="steam-input" style="padding:8px" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="steam-form-group">
+          <label>Rarity (Ховор байдал)</label>
+          <select id="csSkinRarityInput" class="steam-input">
+            <option value="covert">🔴 Covert (Улаан)</option>
+            <option value="classified">🟣 Classified (Ягаан)</option>
+            <option value="restricted">🟪 Restricted (Нил ягаан)</option>
+            <option value="mil">🔵 Mil-Spec (Цэнхэр)</option>
+          </select>
+        </div>
+        <div class="steam-form-group">
+          <label>CS2 Paint ID (заавал биш)</label>
+          <input type="number" id="csSkinPaintIdInput" class="steam-input" placeholder="Жнь: 344 (Dragon Lore)" />
+        </div>
+      </div>
+      <button class="btn-confirm-topup" onclick="saveCustomSkinFromModal()">✅ Skin Changer рүү нэмж зүүх</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CS2 SERVER WEAPONPAINTS EXPORT MODAL ===== -->
+<div class="mz-modal-backdrop" id="serverSkinExportModal" onclick="if(event.target===this)closeServerSkinExportModal()">
+  <div class="mz-modal" style="max-width:640px">
+    <div class="mz-modal-header">
+      <div class="mz-modal-title"><span>📋 CS2 СЕРВЕР РҮҮ СКИНҮҮДЭЭ ХУУЛАХ (WEAPONPAINTS)</span></div>
+      <button class="mz-modal-close" onclick="closeServerSkinExportModal()">✕</button>
+    </div>
+    <div class="mz-modal-body">
+      <p class="mz-modal-sub">Таны вэб дээр зүүсэн бүх скинүүдийг жинхэнэ CS2 серверийн <strong>CounterStrikeSharp WeaponPaints</strong> plugin болон тоглоомын чат руу шууд хуулах бэлэн код:</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button type="button" class="rf-btn active" id="expTabChat" onclick="switchExportTab('chat')">💬 CS2 Чат / Консол (!wp)</button>
+        <button type="button" class="rf-btn" id="expTabSql" onclick="switchExportTab('sql')">🗄️ WeaponPaints MySQL (SQL)</button>
+        <button type="button" class="rf-btn" id="expTabJson" onclick="switchExportTab('json')">📦 JSON Config</button>
+      </div>
+      <textarea id="serverExportTextarea" class="steam-input" rows="9" readonly style="font-family:monospace;font-size:0.78rem;line-height:1.45;resize:vertical"></textarea>
+      <button class="btn-confirm-topup" onclick="copyServerSkinExport()">📋 Бүгдийг Хуулах (Copy to Clipboard)</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CS2 CASE OPENING SECTION ===== -->
+<section class="cases-section page-section" id="cases" data-page-id="cases">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">CS2 CASE OPENING · 3 ТӨРЛИЙН КЕЙС</div>
+      <h2 class="section-title">Хайрцаг Задлах & Хутга / Бээлий Хожих</h2>
+      <p class="section-desc">50,000 ELO хүрэхэд 1 үнэгүй кейс · 10,000 MZ Стандарт кейс · 50,000 MZ Хутга & Бээлий унах Элит кейс!</p>
+    </div>
+
+    <!-- 50,000 ELO Milestone Progress Banner -->
+    <div class="elo-milestone-bar">
+      <div class="emb-left">
+        <div class="emb-icon">🏆</div>
+        <div class="emb-info">
+          <div class="emb-top-row">
+            <span class="emb-label">ТАНЫ НИЙТ ELO ОНОО: <strong id="userTotalEloText">37,500</strong> ELO</span>
+            <span class="emb-next">Дараагийн үнэгүй кейс: <strong id="nextEloMilestoneText">50,000 ELO</strong></span>
+          </div>
+          <div class="emb-progress-track">
+            <div class="emb-progress-fill" id="eloMilestoneFill" style="width:75%"></div>
+          </div>
+          <div class="emb-sub">💡 50,000 ELO нэмэгдэх бүрд (50k, 100k, 150k...) автоматаар <strong>+1 Үнэгүй Кейс Түлхүүр</strong> нэмэгдэнэ!</div>
+        </div>
+      </div>
+      <div class="emb-right">
+        <div class="emb-keys-badge">
+          <span class="ekb-label">50K КЕЙС ЭРХ</span>
+          <span class="ekb-val">🔑 <span id="eloFreeKeysCount">0</span> эрх</span>
+        </div>
+        <button class="btn-elo-boost" onclick="addSimulatedElo(12500)" title="Тоглолт хийж ELO нэмэх туршилт">
+          ⚔️ +12,500 ELO Нэмэх (Турших)
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Case Tiers Selector -->
+    <div class="case-selector-grid" id="caseSelectorGrid">
+      <!-- Rendered by JS -->
+    </div>
+
+    <!-- Main Roulette Stage -->
+    <div class="case-roller-frame">
+      <div class="crf-top">
+        <div class="crf-case-info">
+          <span class="crf-emoji" id="activeCaseEmoji">🎁</span>
+          <div>
+            <div class="crf-name" id="activeCaseName">ӨДРИЙН ҮНЭГҮЙ КЕЙС</div>
+            <div class="crf-sub" id="activeCaseSub">Өдөрт 1 удаа 0 MZ Coin-оор үнэгүй задлах боломжтой</div>
+          </div>
+        </div>
+        <div class="crf-controls">
+          <button class="at-mode-btn" id="caseFastBtn" onclick="toggleCaseFastMode()">⚡ Хурдан эргүүлэх: OFF</button>
+          <button class="btn-open-case" id="btnOpenCase" onclick="spinCaseRoulette()">
+            🔑 КЕЙС ЗАДЛАХ (<span id="activeCaseCostText">ҮНЭГҮЙ</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Horizontal Roulette Window -->
+      <div class="roulette-viewport" id="rouletteViewport">
+        <div class="roulette-center-line"></div>
+        <div class="roulette-track" id="rouletteTrack">
+          <!-- 55 items generated dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- Win Result Banner (Shown when spin finishes) -->
+      <div class="case-win-banner" id="caseWinBanner" style="display:none">
+        <div class="cwb-left">
+          <div class="cwb-emoji" id="wonItemEmoji">🗡️</div>
+          <div>
+            <div class="cwb-tag" id="wonItemRarityTag">★ RARE SPECIAL ITEM</div>
+            <div class="cwb-name" id="wonItemFullName">Karambit | Gamma Doppler</div>
+            <div class="cwb-val">Үнэлгээ: <strong id="wonItemSellPrice">4,500 MZ</strong></div>
+          </div>
+        </div>
+        <div class="cwb-actions">
+          <button class="btn-cwb-equip" id="btnEquipWonSkin" onclick="equipWonCaseItem()">⚡ Skin Changer-т Зүүх</button>
+          <button class="btn-cwb-sell" id="btnSellWonItem" onclick="sellWonCaseItem()">🪙 Зарах (+<span id="wonItemSellBtnVal">4,500</span> MZ)</button>
+          <button class="btn-cwb-again" onclick="spinCaseRoulette()">🔄 Дахин задлах</button>
+        </div>
+      </div>
+
+      <!-- Possible Drops inside this Case -->
+      <div class="case-contents-wrap">
+        <div class="ccw-title">📦 ЭНЭ ХАЙРЦАГ ДОТОРХ ЭД ЗҮЙЛС & МАГАДЛАЛ:</div>
+        <div class="case-contents-grid" id="caseContentsGrid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- User's Won Drops History Strip -->
+    <div class="sc-equipped-strip" style="margin-top:24px">
+      <div class="sc-equipped-title">🎒 ТАНЫ ХАЙРЦАГНААС ХОЖСОН ЗҮЙЛС</div>
+      <div class="sc-equipped-list" id="caseWonHistoryList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MZ SHOP SECTION ===== -->
+<section class="shop-section page-section" id="shop" data-page-id="shop">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">MZ STORE & ADMIN RANKS</div>
+      <h2 class="section-title">Дэлгүүр & VIP / Админ Эрх Авах</h2>
+      <p class="section-desc">VIP, VIP+, Moderator, Admin, Overlord эрхүүдийг MZ Coin-оор шууд аваарай · Сервер сонголттой (Public / DM / Competitive)</p>
+    </div>
+
+    <!-- Wallet & Daily Bonus Banner -->
+    <div class="shop-wallet-bar">
+      <div class="sw-left">
+        <div class="sw-coin-badge">
+          <div class="mz-coin-icon lg">MZ</div>
+          <div>
+            <div class="sw-label">ТАНЫ ДАНСНЫ ҮЛДЭГДЭЛ</div>
+            <div class="sw-balance"><span id="shopMzBalance">2,500</span> <small>MZ Coin</small></div>
+          </div>
+        </div>
+        <div class="sw-divider"></div>
+        <div class="sw-rank-status">
+          <div class="sw-label">ИДЭВХТЭЙ ЭРХ</div>
+          <div class="sw-current-rank" id="shopCurrentRank">Энгийн тоглогч</div>
+        </div>
+      </div>
+      <div class="sw-actions">
+        <button class="btn-daily-bonus" id="dailyBonusBtn" onclick="claimDailyBonus()">
+          🎁 Өдрийн урамшуулал (+500 MZ)
+        </button>
+        <button class="btn-topup-main" onclick="openTopupModal()">
+          ⚡ MZ Coin Цэнэглэх
+        </button>
+      </div>
+    </div>
+
+    <!-- Shop Category Tabs & Duration Selector -->
+    <div class="shop-controls">
+      <div class="shop-tabs">
+        <button class="shop-tab active" onclick="switchShopTab('ranks')" data-shoptab="ranks">👑 Серверийн Эрхүүд (Ranks)</button>
+        <button class="shop-tab" onclick="switchShopTab('perks')" data-shoptab="perks">✨ Тусгай Нэмэлтүүд (Perks)</button>
+        <button class="shop-tab" onclick="switchShopTab('coins')" data-shoptab="coins">🪙 MZ Coin Багцууд</button>
+      </div>
+
+      <div class="shop-duration-picker" id="durationPicker">
+        <span class="dp-label">Хугацаа:</span>
+        <button class="dp-btn" onclick="selectDuration(7)" data-days="7">7 хоног</button>
+        <button class="dp-btn active" onclick="selectDuration(30)" data-days="30">30 хоног</button>
+        <button class="dp-btn" onclick="selectDuration(90)" data-days="90">90 хоног <span class="dp-sale">-20%</span></button>
+        <button class="dp-btn" onclick="selectDuration(999)" data-days="999">Үүрдийн 🔥</button>
+      </div>
+    </div>
+
+    <!-- RANKS GRID (VIP, VIP+, MODERATOR, ADMIN) -->
+    <div class="shop-panel active" id="shopPanel-ranks">
+      <div class="ranks-grid" id="ranksGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- PERKS GRID -->
+    <div class="shop-panel" id="shopPanel-perks">
+      <div class="perks-grid" id="perksGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- COINS PACKAGES GRID -->
+    <div class="shop-panel" id="shopPanel-coins">
+      <div class="coins-grid" id="coinsGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Purchased / Active Items Strip -->
+    <div class="shop-owned-strip">
+      <div class="shop-owned-title">🎒 Таны авсан эрх болон зүйлс</div>
+      <div class="shop-owned-list" id="ownedItemsList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TOPUP / PAYMENT MODAL ===== -->
+<div class="mz-modal-backdrop" id="topupModal" onclick="if(event.target===this)closeTopupModal()">
+  <div class="mz-modal">
+    <div class="mz-modal-header">
+      <div class="mz-modal-title">
+        <div class="mz-coin-icon">MZ</div>
+        <span>MZ COIN ЦЭНЭГЛЭХ</span>
+      </div>
+      <button class="mz-modal-close" onclick="closeTopupModal()">✕</button>
+    </div>
+    <div class="mz-modal-body">
+      <p class="mz-modal-sub">Багцаа сонгоод QPay, SocialPay эсвэл Банкны картаар хормын дотор цэнэглээрэй. (1 MZ Coin ≈ 1₮)</p>
+      <div class="topup-packages" id="modalTopupPackages">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="payment-methods">
+        <div class="pm-title">Төлбөрийн хэлбэр сонгох</div>
+        <div class="pm-grid">
+          <button class="pm-btn active" onclick="selectPaymentMethod(this, 'QPay')">
+            <span class="pm-icon">📱</span>
+            <span class="pm-name">QPay QR</span>
+          </button>
+          <button class="pm-btn" onclick="selectPaymentMethod(this, 'SocialPay')">
+            <span class="pm-icon">💳</span>
+            <span class="pm-name">SocialPay</span>
+          </button>
+          <button class="pm-btn" onclick="selectPaymentMethod(this, 'KhanBank')">
+            <span class="pm-icon">🏦</span>
+            <span class="pm-name">Дансаар</span>
+          </button>
+          <button class="pm-btn" onclick="selectPaymentMethod(this, 'SteamSkins')">
+            <span class="pm-icon">🔫</span>
+            <span class="pm-name">CS2 Skin-ээр</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="topup-summary">
+        <div>
+          <div class="ts-label">Төлөх дүн:</div>
+          <div class="ts-price" id="topupPriceMNT">10,000₮</div>
+        </div>
+        <div style="text-align:right">
+          <div class="ts-label">Авах MZ Coin:</div>
+          <div class="ts-coins" id="topupCoinsReceive">+11,000 MZ</div>
+        </div>
+      </div>
+
+      <button class="btn-confirm-topup" onclick="confirmTopup()">
+        ⚡ Төлбөр шалгах & Цэнэглэх (Demo)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOP 15 LEADERBOARD PAGE ===== -->
+<section class="leaderboard-section page-section" id="leaderboard" data-page-id="leaderboard">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">TOP 15 STATUS · ШИЛДЭГ ТОГЛОГЧИД</div>
+      <h2 class="section-title">TOP 15 Статистик & Эрэмбэ</h2>
+      <p class="section-desc">Kill, Headshot, AK-47, AWP, Knife, Zeus, Public Server болон KZ/Bhop тус бүрийн TOP 15 шилдэг тоглогчид</p>
+    </div>
+    <div class="lb-tabs lb-tabs-top15">
+      <button class="lb-tab active" onclick="switchLBTab('kills')" data-lbtab="kills">💀 Kill Top 15</button>
+      <button class="lb-tab" onclick="switchLBTab('headshot')" data-lbtab="headshot">🎯 Headshot Top 15</button>
+      <button class="lb-tab" onclick="switchLBTab('ak47')" data-lbtab="ak47">🔫 AK-47 Top 15</button>
+      <button class="lb-tab" onclick="switchLBTab('awp')" data-lbtab="awp">🔭 AWP Top 15</button>
+      <button class="lb-tab" onclick="switchLBTab('knife')" data-lbtab="knife">🗡️ Knife Top 15</button>
+      <button class="lb-tab" onclick="switchLBTab('zeus')" data-lbtab="zeus">⚡ Zeus Top 15</button>
+      <button class="lb-tab" onclick="switchLBTab('public')" data-lbtab="public">🌐 Public Top 15</button>
+      <button class="lb-tab" onclick="switchLBTab('kz')" data-lbtab="kz">🏃 KZ / Bhop Top 15</button>
+    </div>
+    <div class="lb-table-wrap">
+      <table class="lb-table" id="lbTable">
+        <thead>
+          <tr id="lbHeadRow">
+            <th>#</th>
+            <th>Тоглогч</th>
+            <th>Алалт</th>
+            <th>HS%</th>
+            <th>K/D</th>
+            <th>ELO</th>
+          </tr>
+        </thead>
+        <tbody id="lbBody">
+        </tbody>
+      </table>
+    </div>
+    <p style="text-align:center;color:var(--text-muted);font-size:0.8rem;margin-top:12px">💡 Тоглогчийн нэр дээр дарж дэлгэрэнгүй CS2 статистик болон мап үзүүлэлтийг харна уу.</p>
+  </div>
+</section>
+
+<!-- ===== DEDICATED COMMUNITY PAGE ===== -->
+<section class="community-section page-section" id="community" data-page-id="community">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">THE MONGOLZ COMMUNITY</div>
+      <h2 class="section-title">CS2 Нийгэмлэг & Хэлэлцүүлэг</h2>
+      <p class="section-desc">CS2-ийн тухай сонирхолтой мэдээлэл, Config/Crosshair, Clutch бичлэг, санаа бодлоо хуваалцаж Like дарж, сэтгэгдэл бичээрэй</p>
+    </div>
+
+    <div class="community-toolbar">
+      <div class="comm-filters">
+        <button class="comm-filter-btn active" onclick="filterCommunityPosts('all', this)">🔥 Бүгд</button>
+        <button class="comm-filter-btn" onclick="filterCommunityPosts('guide', this)">📚 Зөвлөмж & Smoke</button>
+        <button class="comm-filter-btn" onclick="filterCommunityPosts('highlight', this)">🎬 Highlights</button>
+        <button class="comm-filter-btn" onclick="filterCommunityPosts('config', this)">⚙️ Config & Crosshair</button>
+        <button class="comm-filter-btn" onclick="filterCommunityPosts('discussion', this)">💬 Санал бодол</button>
+      </div>
+      <button class="btn-new-post" onclick="toggleNewPostForm()">✍️ Шинэ пост оруулах</button>
+    </div>
+
+    <!-- New Post Composer (Collapsible) -->
+    <div class="comm-composer" id="commComposer" style="display:none">
+      <div class="cc-title">✍️ Шинэ нийтлэл бичих</div>
+      <div class="cc-row">
+        <input type="text" id="commPostTitle" class="steam-input" placeholder="Гарчиг бичих (жнь: Mirage A-site шинэ CS2 Smoke lineup!)" maxlength="100" />
+        <select id="commPostCat" class="steam-input" style="max-width:220px">
+          <option value="discussion">💬 Санал бодол</option>
+          <option value="guide">📚 Зөвлөмж & Smoke</option>
+          <option value="highlight">🎬 Highlights</option>
+          <option value="config">⚙️ Config & Crosshair</option>
+        </select>
+      </div>
+      <textarea id="commPostBody" class="steam-input comm-textarea" rows="3" placeholder="CS2-ийн талаар өөрийн санаа бодол, туршлага, crosshair код эсвэл мэдээллээ бичээрэй..."></textarea>
+      <div class="cc-actions">
+        <button class="btn-secondary" style="padding:8px 16px;font-size:0.82rem" onclick="toggleNewPostForm()">Болих</button>
+        <button class="btn-primary" style="padding:8px 20px;font-size:0.85rem" onclick="publishCommunityPost()">🚀 Нийтлэх</button>
+      </div>
+    </div>
+
+    <!-- Posts Feed -->
+    <div class="community-feed" id="communityFeed"></div>
+  </div>
+</section>
+
+<!-- ===== BANLIST & PLAYER SEARCH DEDICATED PAGE ===== -->
+<section class="banlist-section page-section" id="banlist" data-page-id="banlist">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">SOURCEBANS & ANTI-CHEAT</div>
+      <h2 class="section-title">Бан жагсаалт & Тоглогч хайх</h2>
+      <p class="section-desc">The Mongolz AI Anti-Cheat болон Админуудын хийсэн шийтгэлүүд · Тоглогч дээр дарж профайл шалгах</p>
+    </div>
+
+    <!-- Anti-cheat status banner -->
+    <div class="ac-status-bar">
+      <div class="ac-stat">
+        <span class="ac-dot green"></span>
+        <div>
+          <div class="ac-label">MZ SHIELD ANTI-CHEAT</div>
+          <div class="ac-val">ИДЭВХТЭЙ (v4.8 Kernel/Server)</div>
+        </div>
+      </div>
+      <div class="ac-stat">
+        <span class="ac-emoji">🔨</span>
+        <div>
+          <div class="ac-label">НИЙТ БАНДУУЛСАН</div>
+          <div class="ac-val">1,482 тоглогч</div>
+        </div>
+      </div>
+      <div class="ac-stat">
+        <span class="ac-emoji">⚡</span>
+        <div>
+          <div class="ac-label">СҮҮЛИЙН 24 ЦАГТ</div>
+          <div class="ac-val" id="recentBanCount">14 Cheater / Cooldown</div>
+        </div>
+      </div>
+      <div class="ac-stat">
+        <button class="btn-lookup-self" onclick="inspectCurrentPlayer()">
+          👤 Миний Профайл & Статистик
+        </button>
+      </div>
+    </div>
+
+    <!-- Banlist controls -->
+    <div class="banlist-controls">
+      <div class="ban-filter-tabs">
+        <button class="ban-tab active" onclick="filterBans('all', this)">Бүгд</button>
+        <button class="ban-tab" onclick="filterBans('cheat', this)">🔴 Cheat (VAC/Aimbot/WH)</button>
+        <button class="ban-tab" onclick="filterBans('temp', this)">🟡 Түр бан / Cooldown</button>
+        <button class="ban-tab" onclick="filterBans('mute', this)">🟣 Mute / Gag</button>
+      </div>
+      <div class="banlist-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" id="banSearchInput" placeholder="Нэр эсвэл SteamID64 хайх..." oninput="searchBans(this.value)" />
+      </div>
+    </div>
+
+    <!-- Banlist Table -->
+    <div class="lb-table-wrap">
+      <table class="lb-table ban-table">
+        <thead>
+          <tr>
+            <th>Огноо</th>
+            <th>Тоглогч & SteamID</th>
+            <th>Шалтгаан</th>
+            <th>Админ / Систем</th>
+            <th>Хугацаа</th>
+            <th>Төлөв</th>
+          </tr>
+        </thead>
+        <tbody id="banlistBody">
+          <!-- Rendered by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ===== STEAM AUTH / LINK MODAL ===== -->
+<div class="mz-modal-backdrop" id="steamModal" onclick="if(event.target===this)closeSteamModal()">
+  <div class="mz-modal steam-modal">
+    <div class="mz-modal-header steam-header">
+      <div class="mz-modal-title">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#66c0f4"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/></svg>
+        <span>STEAM АККАУНТ ХОЛБОХ</span>
+      </div>
+      <button class="mz-modal-close" onclick="closeSteamModal()">✕</button>
+    </div>
+    <div class="mz-modal-body">
+      <div class="steam-bonus-banner">
+        🎁 Steam аккаунтаараа нэвтэрч <strong>+1,000 MZ Coin</strong> урамшуулал болон серверт Skin/VIP эрхээ шууд синк хийгээрэй!
+      </div>
+
+      <!-- Official Valve Steam OpenID 2.0 Login Button -->
+      <div class="steam-openid-box">
+        <button type="button" class="btn-steam-official-openid" onclick="redirectToRealSteamOpenID()">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/></svg>
+          <div style="text-align:left">
+            <div style="font-size:0.98rem;font-weight:800">Sign in through STEAM (Албан ёсны OpenID)</div>
+            <div style="font-size:0.72rem;opacity:0.85;font-weight:500">steamcommunity.com руу орж өөрийн жинхэнэ Steam хаягаар нэвтрэх</div>
+          </div>
+        </button>
+      </div>
+
+      <div class="steam-or-divider"><span>ЭСВЭЛ NICKNAME & STEAMID ГАРААР ТОХИРУУЛАХ</span></div>
+
+      <div class="steam-form-group">
+        <label>Таны CS2 / Steam Nickname</label>
+        <input type="text" id="steamNickInput" class="steam-input" placeholder="Жнь: bLitz, Techno4K, Senzu..." value="MGL_Shooter" />
+      </div>
+
+      <div class="steam-form-group">
+        <label>SteamID64 эсвэл Steam Profile URL</label>
+        <input type="text" id="steamIdInput" class="steam-input" placeholder="76561198384920112 эсвэл https://steamcommunity.com/id/..." value="76561198992841023" />
+      </div>
+
+      <div class="steam-form-group">
+        <label>Профайл Аватар сонгох</label>
+        <div class="steam-avatar-picker" id="steamAvatarPicker">
+          <button type="button" class="sa-btn active" onclick="pickSteamAvatar('🐺', this)">🐺</button>
+          <button type="button" class="sa-btn" onclick="pickSteamAvatar('🦅', this)">🦅</button>
+          <button type="button" class="sa-btn" onclick="pickSteamAvatar('🐉', this)">🐉</button>
+          <button type="button" class="sa-btn" onclick="pickSteamAvatar('🔥', this)">🔥</button>
+          <button type="button" class="sa-btn" onclick="pickSteamAvatar('🎯', this)">🎯</button>
+          <button type="button" class="sa-btn" onclick="pickSteamAvatar('👑', this)">👑</button>
+        </div>
+      </div>
+
+      <div class="steam-presets">
+        <span class="sp-label">Шууд турших (Pro Presets):</span>
+        <button type="button" class="sp-chip" onclick="fillSteamPreset('bLitz', '76561198044219801', '🐺')">🐺 bLitz</button>
+        <button type="button" class="sp-chip" onclick="fillSteamPreset('Senzu', '76561198311940552', '🔥')">🔥 Senzu</button>
+        <button type="button" class="sp-chip" onclick="fillSteamPreset('910', '76561198276109440', '🎯')">🎯 910</button>
+        <button type="button" class="sp-chip" onclick="fillSteamPreset('Techno4K', '76561198192837465', '🦅')">🦅 Techno4K</button>
+      </div>
+
+      <button class="btn-steam-submit" onclick="confirmSteamLink()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M11.979 0C5.678 0 .511 4.86.022 11.037l6.432 2.658c.545-.371 1.203-.59 1.912-.59.063 0 .125.004.188.006l2.861-4.142V8.91c0-2.495 2.028-4.524 4.524-4.524 2.494 0 4.524 2.031 4.524 4.527s-2.03 4.525-4.524 4.525h-.105l-4.076 2.911c0 .052.004.105.004.159 0 1.875-1.515 3.396-3.39 3.396-1.635 0-3.016-1.173-3.331-2.727L.436 15.27C1.862 20.307 6.486 24 11.979 24c6.627 0 11.999-5.373 11.999-12S18.605 0 11.979 0z"/></svg>
+        Steam OpenID-аар баталгаажуулж холбох
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PLAYER PROFILE INSPECTOR MODAL ===== -->
+<div class="mz-modal-backdrop" id="playerProfileModal" onclick="if(event.target===this)closePlayerProfile()">
+  <div class="mz-modal profile-modal">
+    <div class="mz-modal-header">
+      <div class="mz-modal-title">
+        <span>📊 ТОГЛОГЧИЙН ПРОФАЙЛ & FACEIT ELO</span>
+      </div>
+      <button class="mz-modal-close" onclick="closePlayerProfile()">✕</button>
+    </div>
+    <div class="mz-modal-body" id="playerProfileBody">
+      <!-- Populated dynamically by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== DISCORD OFFICIAL OAUTH MODAL ===== -->
+<div class="mz-modal-backdrop" id="discordModal" onclick="if(event.target===this)closeDiscordModal()">
+  <div class="mz-modal steam-modal">
+    <div class="mz-modal-header">
+      <div class="mz-modal-title">
+        <span style="color:#5865F2;font-size:1.3rem">💬</span>
+        <span>DISCORD АЛБАН ЁСНЫ НЭВТРЭЛТ</span>
+      </div>
+      <button class="mz-modal-close" onclick="closeDiscordModal()">✕</button>
+    </div>
+    <div class="mz-modal-body">
+      <p class="mz-modal-sub">Discord албан ёсны сайтаар (OAuth2) дамжуулан нэвтэрснээр таны VIP/Admin роль автоматаар Discord сервер дээр идэвхжинэ.</p>
+      <button class="btn-discord-oauth" onclick="redirectToRealDiscordOAuth()">
+        🔗 discord.com Албан ёсны сайтаар нэвтрэх (OAuth2)
+      </button>
+      <div style="text-align:center;color:var(--text-muted);font-size:0.76rem;margin:12px 0">эсвэл туршилтын горимоор шууд холбох:</div>
+      <div class="steam-form-group">
+        <label class="sf-label">Discord хэрэглэгчийн нэр</label>
+        <input type="text" id="discordUserInput" class="steam-input" placeholder="Жнь: bLitz_MN#2026" value="MongolZ_Pro#0001" />
+      </div>
+      <button class="btn-confirm-topup" style="background:linear-gradient(135deg,#5865F2,#4752C4);margin-top:12px" onclick="confirmDiscordLink()">
+        ✅ Discord Холбох
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== RANK PURCHASE WARNING & SERVER CHOICE MODAL ===== -->
+<div class="mz-modal-backdrop" id="rankWarningModal" onclick="if(event.target===this)closeRankWarningModal()">
+  <div class="mz-modal">
+    <div class="mz-modal-header">
+      <div class="mz-modal-title">
+        <span>⚠️ ХУДАЛДАН АВАХЫН ӨМНӨХ САНАМЖ</span>
+      </div>
+      <button class="mz-modal-close" onclick="closeRankWarningModal()">✕</button>
+    </div>
+    <div class="mz-modal-body">
+      <div class="rw-summary" id="rwSummaryBox"></div>
+      <div class="rw-server-select" id="rwServerSelectWrap">
+        <label class="sf-label">Эрх идэвхжүүлэх сервер сонгох:</label>
+        <div class="rw-server-btns" id="rwServerBtns">
+          <button type="button" class="rw-srv-btn active" onclick="pickRankServer('Public', this)">🌐 Public</button>
+          <button type="button" class="rw-srv-btn" onclick="pickRankServer('Deathmatch', this)">💀 Deathmatch</button>
+          <button type="button" class="rw-srv-btn" onclick="pickRankServer('Competitive (5v5)', this)">⚔️ Competitive (5v5)</button>
+        </div>
+      </div>
+      <div class="rw-warning-box">
+        <div class="rww-title">🚨 АНХААРУУЛГА & ДҮРЭМ (ЗӨРЧВӨЛ ЭРХ ХУРААНА)</div>
+        <ul>
+          <li>Эрх мэдлээ урвуулан ашиглах (шалтгаангүй kick/ban/mute/slay хийх) хатуу хориотой.</li>
+          <li>Тоглогчдыг доромжлох, хараах, toxic зан гаргах эсвэл cheat/script ашиглавал <strong>эрхийг шууд хурааж, буцаан олголт хийхгүй</strong>.</li>
+          <li>Admin/Moderator нь зөвхөн нотолгоотой үед шийтгэл оногдуулах үүрэгтэй.</li>
+          <li>Эрх хураагдсан тохиолдолд төлсөн MZ Coin буцаан олгогдохгүй болохыг анхаарна уу.</li>
+        </ul>
+      </div>
+      <label class="rw-agree-check">
+        <input type="checkbox" id="rwAgreeCheckbox" />
+        <span>Дээрх санамж, серверийн дүрэмтэй бүрэн танилцаж, зөрчсөн тохиолдолд эрх хураахыг зөвшөөрч байна.</span>
+      </label>
+      <button class="btn-confirm-topup" id="rwConfirmBtn" onclick="executeConfirmedRankPurchase()" style="margin-top:14px">
+        ✅ Зөвшөөрч байна — Худалдан авах
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FLOATING LIVE CHAT, CALL ADMIN & RARE DROP TICKER (BOTTOM RIGHT) ===== -->
+<div class="live-chat-widget" id="liveChatWidget">
+  <div class="lc-header" onclick="toggleLiveChat()">
+    <div class="lc-header-left">
+      <span class="lc-online-dot"></span>
+      <span class="lc-title">💬 ЧАТ & АДМИН ДУУДАХ</span>
+      <span class="lc-count" id="lcOnlineCount">142</span>
+    </div>
+    <button class="lc-toggle-btn" id="lcToggleBtn" type="button">−</button>
+  </div>
+
+  <div class="lc-body" id="lcBody">
+    <div class="lc-tabs">
+      <button class="lc-tab active" onclick="switchChatTab('chat', this)">💬 Чат</button>
+      <button class="lc-tab" onclick="switchChatTab('admin', this)">🚨 Админ дуудах</button>
+      <button class="lc-tab" onclick="switchChatTab('drops', this)">🎁 Drops</button>
+    </div>
+
+    <!-- Chat Messages Feed -->
+    <div class="lc-feed active" id="lcFeedChat"></div>
+
+    <!-- Direct Call Admin Panel -->
+    <div class="lc-feed" id="lcFeedAdmin">
+      <div class="lc-admin-call-box">
+        <div class="lac-title">🚨 Шууд Админ дуудах</div>
+        <div class="lac-sub">Cheater, дүрэм зөрчигч эсвэл асуудал гарвал серверээ сонгоод илгээнэ үү. Онлайн админ шууд орж шалгана!</div>
+        <select id="adminCallServer" class="steam-input" style="font-size:0.78rem;padding:7px 10px;margin-bottom:8px">
+          <option value="Public #1 (de_dust2)">🌐 Public #1 (de_dust2)</option>
+          <option value="Public #2 (de_mirage)">🌐 Public #2 (de_mirage)</option>
+          <option value="Deathmatch #1">💀 Deathmatch #1</option>
+          <option value="Deathmatch #2">💀 Deathmatch #2</option>
+          <option value="KZ / Bhop #1">🏃 KZ / Bhop #1</option>
+          <option value="5v5 Competitive Match">⚔️ 5v5 Competitive Match</option>
+        </select>
+        <select id="adminCallReason" class="steam-input" style="font-size:0.78rem;padding:7px 10px;margin-bottom:8px">
+          <option value="Cheater / Wallhack / Aimbot">🎯 Cheater / Aimbot / WH</option>
+          <option value="Toxic / Хараал / Мик спам">🤬 Toxic / Хараал / Спам</option>
+          <option value="Griefing / Teamkill">💣 Griefing / Teamkill</option>
+          <option value="Серверийн техникийн асуудал">⚙️ Техникийн асуудал</option>
+        </select>
+        <input type="text" id="adminCallNote" class="steam-input" style="font-size:0.78rem;padding:7px 10px;margin-bottom:8px" placeholder="Сэжигтний нэр эсвэл тайлбар..." maxlength="120" />
+        <button type="button" class="btn-call-admin-submit" onclick="submitCallAdmin()">🚨 АДМИН ШУУД ДУУДАХ</button>
+      </div>
+    </div>
+
+    <!-- Live Drops / Server Activity Feed -->
+    <div class="lc-feed" id="lcFeedDrops"></div>
+
+    <!-- Quick Emoji Reactions -->
+    <div class="lc-quick-bar">
+      <button type="button" onclick="sendQuickChat('🔥 GG WP!')">🔥 GG</button>
+      <button type="button" onclick="sendQuickChat('⚔️ 5v5 +1 хүн хэрэгтэй!')">⚔️ +1 5v5</button>
+      <button type="button" onclick="sendQuickChat('🇲🇳 MONGOLZ #1')">🇲🇳 MZ #1</button>
+      <button type="button" onclick="sendQuickChat('🐔 Тахиа агнаж байна!')">🐔 Тахиа</button>
+    </div>
+
+    <!-- Chat Input -->
+    <form class="lc-input-row" onsubmit="handleChatSubmit(event)">
+      <input type="text" id="lcInput" placeholder="Мессеж бичих..." maxlength="140" autocomplete="off" />
+      <button type="submit" class="lc-send-btn">➤</button>
+    </form>
+  </div>
+</div>
+
+<!-- ===== CLAN WAR ARENA PAGE ===== -->
+<section class="clanwar-section page-section" id="clanwar" data-page-id="clanwar" style="display:none">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-tag">⚔️ CLAN WAR LEAGUE · SEASON 1</div>
+      <h2 class="section-title">⚔️ Clan War Arena & Мапын Төлөөх Тулаан</h2>
+      <p class="section-desc">Кланаа үүсгэж, 7 үндсэн мапын эзэн болж өдөр бүр MZ Coin ав, бооцоотой Map Veto тулаан хийж, Долоо хоногийн Цомд түрүүлээрэй!</p>
+    </div>
+
+    <!-- 3-Step Ultra-Clear Guide -->
+    <div class="cw-howto-strip">
+      <div class="cw-howto-step">
+        <span class="cw-step-num">1</span>
+        <div>
+          <strong>Клан үүсгэ эсвэл Элс</strong>
+          <span>5 үндсэн + 2 сэлгээний гишүүнтэй өөрийн [TAG] бүртгүүлнэ</span>
+        </div>
+      </div>
+      <div class="cw-howto-arrow">➜</div>
+      <div class="cw-howto-step">
+        <span class="cw-step-num">2</span>
+        <div>
+          <strong>Дуудлага & Map Veto</strong>
+          <span>Өрсөлдөгч кланаа сонгож MZ Coin бооцоо + Map Ban/Pick хийнэ</span>
+        </div>
+      </div>
+      <div class="cw-howto-arrow">➜</div>
+      <div class="cw-howto-step">
+        <span class="cw-step-num">3</span>
+        <div>
+          <strong>5v5 Ялж Шагнал Ав</strong>
+          <span>Мапын эзэн болоод өдөр бүр +2,000 MZ Coin & Bounty шагнал авна</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Status Row: My Clan + Active Bounty Target -->
+    <div class="cw-top-grid">
+      <div class="cw-myclan-card" id="cwMyClanCard"></div>
+      <div class="cw-bounty-card" id="cwBountyCard"></div>
+    </div>
+
+    <!-- Clean 5-Tab Navigation -->
+    <div class="cw-tabs" id="cwTabs">
+      <button type="button" class="cw-tab active" data-cwtab="maps" onclick="switchClanWarTab('maps')">👑 Мапын Эзэд (7)</button>
+      <button type="button" class="cw-tab" data-cwtab="rankings" onclick="switchClanWarTab('rankings')">📊 Кланы Чансаа</button>
+      <button type="button" class="cw-tab" data-cwtab="veto" onclick="switchClanWarTab('veto')">🗺️ Map Veto & Тулаан</button>
+      <button type="button" class="cw-tab" data-cwtab="bracket" onclick="switchClanWarTab('bracket')">🏆 Долоо Хоногийн Цом</button>
+      <button type="button" class="cw-tab" data-cwtab="recruit" onclick="switchClanWarTab('recruit')">📢 Тоглогч Элсүүлэх (LFT)</button>
+    </div>
+
+    <!-- TAB 1: KING OF THE MAP (7 CS2 MAPS) -->
+    <div class="cw-panel active" id="cwPanel-maps">
+      <div class="cw-panel-head">
+        <div>
+          <h3>👑 7 Мапын Эзэн Кланууд (King of the Map)</h3>
+          <p>Мап бүрийг эзэмшиж буй клан өдөр бүр автоматаар <strong>+2,000 MZ Coin</strong> татвар авдаг. Дуудаж ялаад титмийг нь булааж ав!</p>
+        </div>
+      </div>
+      <div class="cw-maps-grid" id="cwMapsGrid"></div>
+    </div>
+
+    <!-- TAB 2: CLAN RANKINGS & QUICK CHALLENGE -->
+    <div class="cw-panel" id="cwPanel-rankings">
+      <div class="cw-panel-head">
+        <div>
+          <h3>📊 Монголын Шилдэг Клануудын Чансаа</h3>
+          <p>3+ дараалан ялсан клан дээр <strong>🔥 BOUNTY</strong> гардаг — тэднийг зогсоосон анхны клан тусгай шагналыг бөөнд нь авна!</p>
+        </div>
+        <button type="button" class="cw-btn-gold" onclick="openCreateClanModal()">➕ Шинэ Клан Үүсгэх</button>
+      </div>
+      <div class="cw-table-wrap">
+        <table class="cw-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Клан</th>
+              <th>Гишүүд</th>
+              <th>Clan ELO</th>
+              <th>Ялалт / Ялагдал</th>
+              <th>Streak & Bounty</th>
+              <th>Үйлдэл</th>
+            </tr>
+          </thead>
+          <tbody id="cwRankingsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: INTERACTIVE MAP VETO & WAGER CHALLENGE -->
+    <div class="cw-panel" id="cwPanel-veto">
+      <div class="cw-panel-head">
+        <div>
+          <h3>🗺️ Шууд Map Veto (FACEIT / HLTV Стандарт) & Бооцоот Тулаан</h3>
+          <p>Өрсөлдөгч клан, формат болон MZ Coin бооцоогоо сонгоод 7 мапаас ээлжлэн <strong>BAN</strong> хийж тоглох мапаа тодорхойлно уу.</p>
+        </div>
+        <button type="button" class="cw-btn-outline" onclick="resetClanVeto()">↺ Veto Шинэчлэх</button>
+      </div>
+
+      <div class="cw-veto-setup">
+        <div class="cw-veto-field">
+          <label>🎯 Өрсөлдөгч Клан</label>
+          <select id="cwVetoOpponent" class="steam-input" onchange="onVetoSetupChange()"></select>
+        </div>
+        <div class="cw-veto-field">
+          <label>📋 Формат</label>
+          <select id="cwVetoFormat" class="steam-input" onchange="onVetoSetupChange()">
+            <option value="BO1">BO1 (1 Мап — Шуурхай)</option>
+            <option value="BO3">BO3 (3 Мап — Албан ёсны)</option>
+          </select>
+        </div>
+        <div class="cw-veto-field">
+          <label>🪙 MZ Coin Бооцоо (Ялагч 2x авна)</label>
+          <select id="cwVetoWager" class="steam-input" onchange="onVetoSetupChange()">
+            <option value="0">0 MZ (Зөвхөн Clan ELO)</option>
+            <option value="5000" selected>5,000 MZ Coin (Нийт шагнал: 10,000 MZ)</option>
+            <option value="20000">20,000 MZ Coin (Нийт шагнал: 40,000 MZ)</option>
+            <option value="50000">50,000 MZ Coin (Нийт шагнал: 100,000 MZ)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="cw-veto-status" id="cwVetoStatus"></div>
+      <div class="cw-veto-maps" id="cwVetoMaps"></div>
+      <div class="cw-veto-room" id="cwVetoRoom" style="display:none"></div>
+    </div>
+
+    <!-- TAB 4: WEEKLY 8-CLAN PLAYOFF BRACKET -->
+    <div class="cw-panel" id="cwPanel-bracket">
+      <div class="cw-panel-head">
+        <div>
+          <h3>🏆 Бямба/Ням Гарагийн 8 Кланы Цом (Playoff Bracket)</h3>
+          <p>🥇 1-р байр: <strong>5 гишүүн бүгдэд VIP+ эрх + 100,000 MZ Coin</strong> · Финал нь Live Arena (Match #1) дээр шууд гарна!</p>
+        </div>
+        <button type="button" class="cw-btn-gold" id="cwRegisterCupBtn" onclick="registerForWeeklyCup()">📝 Кланаа Цомд Бүртгүүлэх</button>
+      </div>
+      <div class="cw-bracket" id="cwBracketContainer"></div>
+    </div>
+
+    <!-- TAB 5: RECRUITING / LFT BOARD -->
+    <div class="cw-panel" id="cwPanel-recruit">
+      <div class="cw-recruit-grid">
+        <!-- Left: Players Looking For Clan -->
+        <div class="cw-recruit-col">
+          <div class="cw-panel-head" style="margin-bottom:14px">
+            <div>
+              <h3>🎯 Клан Хайж Буй Тоглогчид (LFT)</h3>
+              <p>Сайн тоглогчдыг кландаа шууд урих эсвэл өөрийгөө бүртгүүлээрэй.</p>
+            </div>
+          </div>
+          <form class="cw-lft-form" onsubmit="postLftListing(event)">
+            <input type="text" id="cwLftName" class="steam-input" placeholder="Таны Nickname (жнь: Batka)" maxlength="24" required />
+            <select id="cwLftRole" class="steam-input">
+              <option value="AWPer">🎯 AWPer</option>
+              <option value="Entry Fragger">⚡ Entry Fragger</option>
+              <option value="IGL">🧠 IGL (Ахлагч)</option>
+              <option value="Rifler">🔫 Rifler</option>
+              <option value="Lurker">🕶️ Lurker</option>
+            </select>
+            <input type="number" id="cwLftElo" class="steam-input" placeholder="ELO (жнь: 2450)" min="500" max="99999" value="2300" />
+            <button type="submit" class="cw-btn-gold">➕ LFT Зар Тавих</button>
+          </form>
+          <div class="cw-lft-list" id="cwLftList"></div>
+        </div>
+
+        <!-- Right: Clans Recruiting Players -->
+        <div class="cw-recruit-col">
+          <div class="cw-panel-head" style="margin-bottom:14px">
+            <div>
+              <h3>🛡️ Гишүүн Хайж Буй Кланууд</h3>
+              <p>Таны үүрэгт тохирох клан руу шууд элсэх хүсэлт илгээгээрэй.</p>
+            </div>
+          </div>
+          <div class="cw-recruiting-list" id="cwRecruitingList"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CREATE CLAN MODAL -->
+<div class="mz-modal-backdrop" id="createClanModal" onclick="if(event.target===this)closeCreateClanModal()">
+  <div class="mz-modal-box" style="max-width:460px">
+    <div class="mz-modal-header">
+      <h3>⚔️ Шинэ Клан Үүсгэх</h3>
+      <button type="button" class="mz-modal-close" onclick="closeCreateClanModal()">✕</button>
+    </div>
+    <form class="cw-create-form" onsubmit="submitCreateClan(event)">
+      <label class="cw-form-label">Кланы нэр</label>
+      <input type="text" id="cwNewName" class="steam-input" placeholder="Жнь: Ulaanbaatar Kings" maxlength="26" required />
+      <label class="cw-form-label">Кланы [TAG] (2-5 үсэг)</label>
+      <input type="text" id="cwNewTag" class="steam-input" placeholder="Жнь: UBK" maxlength="5" required style="text-transform:uppercase" />
+      <label class="cw-form-label">Кланы өнгө</label>
+      <div class="cw-color-row">
+        <input type="color" id="cwNewColor" value="#f0a800" style="width:48px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none" />
+        <span style="font-size:0.8rem;color:var(--text-muted)">Лого болон нэрийн хажууд харагдах өнгө</span>
+      </div>
+      <label class="cw-form-label">Уриа / Тайлбар</label>
+      <input type="text" id="cwNewMotto" class="steam-input" placeholder="Жнь: Mirage-ийн эзэн болох зорилготой!" maxlength="60" />
+      <div style="display:flex;gap:10px;margin-top:16px">
+        <button type="button" class="cw-btn-outline" style="flex:1" onclick="closeCreateClanModal()">Болих</button>
+        <button type="submit" class="cw-btn-gold" style="flex:2">⚔️ Клан Үүсгэх (Үнэгүй)</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== STATS SECTION (SHOWN ON HOME) ===== -->
+<section class="stats-section page-section active" id="stats" data-page-id="home">
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stats-card">
+        <div class="stats-icon">🏆</div>
+        <div class="stats-num" data-count="12480">12,480</div>
+        <div class="stats-label">Нийт тоглогч</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-icon">⚔️</div>
+        <div class="stats-num" data-count="284920">284,920</div>
+        <div class="stats-label">Нийт тоглолт</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-icon">💀</div>
+        <div class="stats-num" data-count="8492340">8,492,340</div>
+        <div class="stats-label">Нийт алалт</div>
+      </div>
+      <div class="stats-card">
+        <div class="stats-icon">🎯</div>
+        <div class="stats-num" data-count="99">99</div>
+        <div class="stats-label">% Uptime</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-emblem" style="transform:scale(1.2)">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <polygon points="20,2 38,10 38,30 20,38 2,30 2,10" fill="#0a0a12" stroke="#f0a800" stroke-width="1.5"/>
+            <text x="20" y="25" font-family="Orbitron" font-size="11" font-weight="900" fill="#f0a800" text-anchor="middle">MZ</text>
+          </svg>
+        </div>
+        <div>
+          <div class="footer-logo-text">THE MONGOLZ CS2</div>
+          <div class="footer-logo-sub">Монголын #1 CS2 Сервер & Нийгэмлэг</div>
+        </div>
+      </div>
+      <div class="footer-links-group">
+        <div class="footer-col">
+          <div class="footer-col-title">Хуудсууд</div>
+          <a href="#servers" class="footer-link" onclick="navigatePage('servers');return false;">Серверүүд & 5v5 (45)</a>
+          <a href="#clanwar" class="footer-link" onclick="navigatePage('clanwar');return false;">⚔️ Clan War Arena</a>
+          <a href="#skinchanger" class="footer-link" onclick="navigatePage('skinchanger');return false;">Skin Changer & Models</a>
+          <a href="#cases" class="footer-link" onclick="navigatePage('cases');return false;">Case Opening</a>
+          <a href="#shop" class="footer-link" onclick="navigatePage('shop');return false;">VIP & Admin Дэлгүүр</a>
+          <a href="#community" class="footer-link" onclick="navigatePage('community');return false;">Community</a>
+          <a href="#banlist" class="footer-link" onclick="navigatePage('banlist');return false;">Banlist</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Сошиал & Нийгэмлэг</div>
+          <a href="https://facebook.com/themongolzcs2" target="_blank" rel="noopener" class="footer-link">📘 Facebook Хуудас</a>
+          <a href="https://discord.gg/mongolz" target="_blank" rel="noopener" class="footer-link">💬 Discord Сервер</a>
+          <a href="https://steamcommunity.com/groups/themongolzcs2" target="_blank" rel="noopener" class="footer-link">🎮 Steam Group</a>
+          <a href="https://youtube.com/@themongolzcs2" target="_blank" rel="noopener" class="footer-link">▶️ YouTube Суваг</a>
+          <a href="https://instagram.com/themongolzcs2" target="_blank" rel="noopener" class="footer-link">📸 Instagram</a>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Холбоо барих</div>
+          <span class="footer-link">🌐 IP: connect.mongolz.gg</span>
+          <span class="footer-link">📧 admin@mongolz.gg</span>
+          <span class="footer-link">📞 Утас: +976 9911-2026</span>
+          <span class="footer-link">📍 Улаанбаатар, Монгол Улс</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 The Mongolz CS2 Server (MZ). Бүх эрх хуулиар хамгаалагдсан.</span>
+      <span class="footer-made">Made with ❤️ in Ulaanbaatar, Mongolia 🇲🇳</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== MOBILE APP BOTTOM NAVIGATION BAR (SHOWN ON PHONES ONLY) ===== -->
+<nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
+  <button type="button" class="mbn-item active" data-page="home" onclick="navigatePage('home')">
+    <span class="mbn-ico">🏠</span>
+    <span class="mbn-lbl">Нүүр</span>
+  </button>
+  <button type="button" class="mbn-item" data-page="arena" onclick="navigatePage('arena')">
+    <span class="mbn-ico">📺</span>
+    <span class="mbn-lbl">Live</span>
+  </button>
+  <button type="button" class="mbn-item" data-page="clanwar" onclick="navigatePage('clanwar')">
+    <span class="mbn-ico">⚔️</span>
+    <span class="mbn-lbl">Clan</span>
+  </button>
+  <button type="button" class="mbn-item" data-page="skinchanger" onclick="navigatePage('skinchanger')">
+    <span class="mbn-ico">🎨</span>
+    <span class="mbn-lbl">Skins</span>
+  </button>
+  <button type="button" class="mbn-item" data-page="shop" onclick="navigatePage('shop')">
+    <span class="mbn-ico">🛒</span>
+    <span class="mbn-lbl">Дэлгүүр</span>
+  </button>
+</nav>
+
+<script src="app.js"></script>
+<script src="mz-upgrade.js"></script>
 </body>
 </html>
