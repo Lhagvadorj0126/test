@@ -7987,3 +7987,160 @@ body.owner-hud-visible .cs2-hunt-hud {
   color: #e2e8f0;
   cursor: pointer;
 }
+
+
+/* ===================== OWNER BIG CLAN WAR BANNER & SPONSOR AD APPROVAL QUEUE ===================== */
+
+.owner-big-banner {
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  z-index: 880;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 58, 138, 0.94));
+  border-bottom: 2px solid rgba(59, 130, 246, 0.65);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(14px);
+}
+
+.owner-big-banner.is-clanwar {
+  padding: 20px 22px;
+  background: linear-gradient(125deg, rgba(127, 29, 29, 0.96) 0%, rgba(180, 83, 9, 0.95) 50%, rgba(15, 23, 42, 0.97) 100%);
+  border-bottom: 3px solid #fde047;
+  box-shadow: 0 18px 48px rgba(240, 168, 0, 0.28), 0 10px 30px rgba(0, 0, 0, 0.8);
+}
+
+.obb-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.obb-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 240px;
+}
+
+.obb-live-pill {
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: rgba(239, 68, 68, 0.92);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  animation: pulse 1.8s infinite;
+}
+
+.obb-title {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: 0.03em;
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.7);
+}
+
+.owner-big-banner.is-clanwar .obb-title {
+  font-size: 1.65rem;
+  color: #fde047;
+  text-transform: uppercase;
+}
+
+.obb-sub {
+  font-size: 0.84rem;
+  color: #e2e8f0;
+  margin-top: 2px;
+}
+
+.obb-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.obb-close {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.owner-ads-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.owner-ad-req {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.owner-ad-req-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+}
+
+.owner-ad-req-btns {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.owner-btn-approve {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: none;
+  background: #22c55e;
+  color: #052e16;
+  font-weight: 800;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.owner-btn-reject {
+  padding: 6px 10px;
+  border-radius: 7px;
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  font-weight: 800;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+@media (max-width: 860px) {
+  .owner-big-banner {
+    top: 60px;
+    padding: 12px 12px;
+  }
+  .owner-big-banner.is-clanwar .obb-title {
+    font-size: 1.18rem;
+  }
+}

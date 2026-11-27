@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261127d" />
+  <link rel="stylesheet" href="style.css?v=20261127e" />
 </head>
 <body>
 
@@ -148,6 +148,23 @@
     </button>
   </div>
 </nav>
+
+<!-- ===== GLOBAL OWNER BIG ANNOUNCEMENT / CLAN WAR BANNER ===== -->
+<div class="owner-big-banner" id="globalOwnerBanner" style="display:none">
+  <div class="obb-inner">
+    <div class="obb-left">
+      <span class="obb-live-pill" id="obbBadge">🔥 OWNER ЗАРЛАЛ</span>
+      <div class="obb-text-wrap">
+        <div class="obb-title" id="obbTitle">⚔️ CLAN WAR ЭХЭЛЛЭЭ!</div>
+        <div class="obb-sub" id="obbSub">Бүх кланууд бэлтгэлээ хангаад Clan War Arena руу орно уу!</div>
+      </div>
+    </div>
+    <div class="obb-actions">
+      <button type="button" class="cw-btn-gold" id="obbCtaBtn" onclick="navigatePage('clanwar')">⚔️ Clan War руу орох</button>
+      <button type="button" class="obb-close" onclick="dismissGlobalBannerForSession()" title="Түр хаах">✕</button>
+    </div>
+  </div>
+</div>
 
 <!-- ===== HERO (HOME PAGE) ===== -->
 <section class="hero page-section active" id="hero" data-page-id="home">
@@ -1713,9 +1730,31 @@
 
     <!-- Step 2: Unlocked Owner Controls -->
     <div id="ownerControlsBody" style="display:none">
+      <!-- Section 0: Big Global Announcement / Clan War Banner -->
+      <div class="owner-sec" style="border-color:rgba(240,168,0,0.45)">
+        <div class="owner-sec-title">📢 1. Том Зарлал Гаргах ("Clan War" гэж бичвэл Томоор гарна!)</div>
+        <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap">
+          <input type="text" id="ownerBannerInput" class="steam-input" style="flex:1;min-width:180px" placeholder="Жнь: Clan War эхэллээ! (эсвэл дурын зарлал)" />
+          <button type="button" class="cw-btn-gold" onclick="ownerPublishBanner()">📢 Гаргах</button>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button type="button" class="cw-btn-outline" style="font-size:0.74rem;padding:5px 10px" onclick="ownerQuickClanWarBanner()">⚔️ Шууд CLAN WAR! гаргах</button>
+          <button type="button" class="cw-btn-outline" style="font-size:0.74rem;padding:5px 10px;border-color:rgba(239,68,68,0.5);color:#fca5a5" onclick="ownerClearBanner()">🗑️ Зарлал арилгах</button>
+        </div>
+      </div>
+
+      <!-- Section 0B: Pending Sponsor Ad Requests Approval -->
+      <div class="owner-sec" style="border-color:rgba(59,130,246,0.45)">
+        <div class="owner-sec-title" style="display:flex;justify-content:space-between;align-items:center">
+          <span>📺 2. Сурталчилгаа Байршуулах Хүсэлтүүд</span>
+          <span class="cw-bounty-badge" id="ownerPendingAdsBadge">0 хүлээгдэж буй</span>
+        </div>
+        <div id="ownerPendingAdsList" class="owner-ads-list"></div>
+      </div>
+
       <!-- Section A: Weather / Season -->
       <div class="owner-sec">
-        <div class="owner-sec-title">☀️ 1. Сайтын Улирал & Цаг Агаар (Зөвхөн Та Солино)</div>
+        <div class="owner-sec-title">☀️ 3. Сайтын Улирал & Цаг Агаар (Зөвхөн Та Солино)</div>
         <div class="owner-weather-grid">
           <button type="button" class="cw-btn-outline owner-w-btn" data-ow="summer" onclick="ownerSetWeather('summer')">☀️ Зун</button>
           <button type="button" class="cw-btn-outline owner-w-btn" data-ow="winter" onclick="ownerSetWeather('winter')">❄️ Өвөл</button>
@@ -1767,7 +1806,7 @@
   </div>
 </div>
 
-<script src="app.js?v=20261127d"></script>
-<script src="mz-upgrade.js?v=20261127d"></script>
+<script src="app.js?v=20261127e"></script>
+<script src="mz-upgrade.js?v=20261127e"></script>
 </body>
 </html>

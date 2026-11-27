@@ -3274,3 +3274,249 @@ window.addEventListener('DOMContentLoaded', () => {
     openOwnerPanel();
   }
 });
+
+
+// ===================== 15. OWNER BIG CLAN WAR BANNER & SPONSOR AD APPROVAL QUEUE =====================
+const MZ_AD_REQ_KEY = 'mz_sponsor_requests_v1';
+const MZ_APPROVED_ADS_KEY = 'mz_approved_sponsor_ads_v1';
+
+function getPendingSponsorRequests() {
+  try {
+    const raw = localStorage.getItem(MZ_AD_REQ_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  // Default 1 sample pending request so Owner immediately sees how approval works
+  return [
+    {
+      id: 'req_sample_1',
+      brand: 'HYPERX MONGOLIA',
+      title: 'CS2 Pro Gaming Headset -20% Хямдрал!',
+      desc: 'THE MONGOLZ серверийн тоглогчдод зориулсан тусгай хямдрал.',
+      mediaUrl: '',
+      author: 'HyperX_MN',
+      time: 'Саяхан'
+    }
+  ];
+}
+
+function savePendingSponsorRequests(list) {
+  try { localStorage.setItem(MZ_AD_REQ_KEY, JSON.stringify(list)); } catch (e) {}
+}
+
+function renderGlobalOwnerBanner() {
+  const banner = document.getElementById('globalOwnerBanner');
+  if (!banner) return;
+  const cfg = getOwnerConfig();
+  const txt = (cfg.bannerText || '').trim();
+  if (!txt) {
+    banner.style.display = 'none';
+    return;
+  }
+
+  const isClanWar = /clan\s*war|клан\s*вар|тэмцээн|cup|tournament/i.test(txt);
+  banner.classList.toggle('is-clanwar', isClanWar);
+  banner.style.display = 'block';
+
+  const badge = document.getElementById('obbBadge');
+  const title = document.getElementById('obbTitle');
+  const sub = document.getElementById('obbSub');
+  const cta = document.getElementById('obbCtaBtn');
+
+  if (badge) badge.textContent = isClanWar ? '⚔️ CLAN WAR LIVE EVENT' : '📢 OWNER ЗАРЛАЛ';
+  if (title) title.textContent = isClanWar ? `⚔️ ${txt}` : `📢 ${txt}`;
+  if (sub) sub.textContent = isClanWar
+    ? '7 Мапын Эзэн болох тулаан болон MZ Coin бооцоот Clan War нээлттэй байна!'
+    : 'THE MONGOLZ — GDG CS2 Серверийн албан ёсны мэдэгдэл';
+  if (cta) {
+    cta.style.display = isClanWar ? '' : 'none';
+  }
+}
+
+function ownerPublishBanner() {
+  const inp = document.getElementById('ownerBannerInput');
+  const text = (inp?.value || '').trim();
+  if (!text) {
+    if (typeof showToast === 'function') showToast('info', '⚠️', 'Зарлалын текстээ бичнэ үү!', 'Жнь: Clan War эхэллээ!', 2500);
+    return;
+  }
+  const cfg = getOwnerConfig();
+  cfg.bannerText = text;
+  saveOwnerConfig(cfg);
+  renderGlobalOwnerBanner();
+  if (typeof showToast === 'function') {
+    showToast('gold', '📢', 'Том зарлал амжилттай гарлаа!', text, 3200);
+  }
+}
+
+function ownerQuickClanWarBanner() {
+  const inp = document.getElementById('ownerBannerInput');
+  const text = 'CLAN WAR ЭХЭЛЛЭЭ — 5v5 МАПЫН ЭЗЭН БОЛОХ ТУЛААН!';
+  if (inp) inp.value = text;
+  const cfg = getOwnerConfig();
+  cfg.bannerText = text;
+  saveOwnerConfig(cfg);
+  renderGlobalOwnerBanner();
+  if (typeof showToast === 'function') {
+    showToast('gold', '⚔️', 'Том CLAN WAR зарлал гарлаа!', 'Сайтын бүх хуудасны дээр томоор харагдаж байна.', 3200);
+  }
+}
+
+function ownerClearBanner() {
+  const inp = document.getElementById('ownerBannerInput');
+  if (inp) inp.value = '';
+  const cfg = getOwnerConfig();
+  cfg.bannerText = '';
+  saveOwnerConfig(cfg);
+  renderGlobalOwnerBanner();
+  if (typeof showToast === 'function') {
+    showToast('info', '🗑️', 'Дээд зарлалыг арилгалаа.', '', 2200);
+  }
+}
+
+function dismissGlobalBannerForSession() {
+  const banner = document.getElementById('globalOwnerBanner');
+  if (banner) banner.style.display = 'none';
+}
+
+// ---- SPONSOR AD APPROVAL QUEUE ----
+function renderOwnerPendingAds() {
+  const listEl = document.getElementById('ownerPendingAdsList');
+  const badgeEl = document.getElementById('ownerPendingAdsBadge');
+  const reqs = getPendingSponsorRequests();
+
+  if (badgeEl) badgeEl.textContent = `${reqs.length} хүлээгдэж буй`;
+  if (!listEl) return;
+
+  if (reqs.length === 0) {
+    listEl.innerHTML = `<div style="font-size:0.78rem;color:var(--text-muted);padding:8px 0;text-align:center">Одоогоор хүлээгдэж буй сурталчилгааны хүсэлт алга байна.</div>`;
+    return;
+  }
+
+  listEl.innerHTML = reqs.map(r => `
+    <div class="owner-ad-req">
+      <div class="owner-ad-req-top">
+        <strong style="color:#fde047">📺 ${r.brand}</strong>
+        <span style="color:var(--text-muted);font-size:0.72rem">${r.author || 'Тоглогч'} · ${r.time || ''}</span>
+      </div>
+      <div style="font-size:0.8rem;color:#fff;font-weight:700">${r.title}</div>
+      <div style="font-size:0.74rem;color:#94a3b8">${r.desc}${r.mediaUrl ? ` · 🔗 ${r.mediaUrl}` : ''}</div>
+      <div class="owner-ad-req-btns">
+        <button type="button" class="owner-btn-approve" onclick="ownerApproveSponsorAd('${r.id}')">✅ Зөвшөөрөх (Live гаргах)</button>
+        <button type="button" class="owner-btn-reject" onclick="ownerRejectSponsorAd('${r.id}')">❌ Татгалзах</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function ownerApproveSponsorAd(reqId) {
+  const reqs = getPendingSponsorRequests();
+  const idx = reqs.findIndex(r => r.id === reqId);
+  if (idx === -1) return;
+  const req = reqs.splice(idx, 1)[0];
+  savePendingSponsorRequests(reqs);
+
+  const newAd = {
+    badge: req.mediaUrl ? 'APPROVED VIDEO SPONSOR' : 'OWNER VERIFIED AD',
+    brand: (req.brand || 'PARTNER').toUpperCase(),
+    title: req.title,
+    desc: req.desc,
+    mediaUrl: req.mediaUrl || '',
+    ctaText: '🔥 Дэлгэрэнгүй үзэх',
+    ctaAction: `showToast('gold','📢','${(req.brand || '').replace(/'/g, '')}','${(req.desc || '').replace(/'/g, '')}',4000)`
+  };
+
+  if (typeof ARENA_SPONSORS !== 'undefined' && Array.isArray(ARENA_SPONSORS)) {
+    ARENA_SPONSORS.unshift(newAd);
+    if (typeof activeSponsorIdx !== 'undefined') activeSponsorIdx = 0;
+    if (typeof renderSponsorStage === 'function') renderSponsorStage();
+  }
+
+  try {
+    const approved = JSON.parse(localStorage.getItem(MZ_APPROVED_ADS_KEY) || '[]');
+    approved.unshift(newAd);
+    localStorage.setItem(MZ_APPROVED_ADS_KEY, JSON.stringify(approved.slice(0, 10)));
+  } catch (e) {}
+
+  renderOwnerPendingAds();
+  if (typeof showToast === 'function') {
+    showToast('success', '✅', `${req.brand} сурталчилгааг зөвшөөрлөө!`, 'Live Arena сурталчилгааны дэлгэц дээр шууд гарлаа.', 3600);
+  }
+}
+
+function ownerRejectSponsorAd(reqId) {
+  const reqs = getPendingSponsorRequests();
+  const idx = reqs.findIndex(r => r.id === reqId);
+  if (idx === -1) return;
+  const req = reqs.splice(idx, 1)[0];
+  savePendingSponsorRequests(reqs);
+  renderOwnerPendingAds();
+  if (typeof showToast === 'function') {
+    showToast('info', '❌', `${req.brand} сурталчилгааны хүсэлтээс татгалзлаа.`, '', 2800);
+  }
+}
+
+// Override submitCustomAd so user ad requests go into Owner Approval Queue first!
+window.submitCustomAd = function() {
+  const brand = (document.getElementById('adBrandInput')?.value || '').trim() || 'CUSTOM PARTNER';
+  const title = (document.getElementById('adTitleInput')?.value || '').trim() || 'Манай серверт нэгдээрэй!';
+  const desc = (document.getElementById('adDescInput')?.value || '').trim() || 'GDG Arena дэлгэц дээрх тусгай сурталчилгаа';
+  const mediaUrl = (document.getElementById('adMediaUrlInput')?.value || '').trim();
+
+  if (typeof mzBalance !== 'undefined' && mzBalance < 2000) {
+    if (typeof showToast === 'function') showToast('info', '🪙', 'MZ Coin хүрэлцэхгүй байна!', 'Сурталчилгаа байршуулахад 2,000 MZ шаардлагатай.', 3500);
+    if (typeof closeAdBookingModal === 'function') closeAdBookingModal();
+    if (typeof openTopupModal === 'function') openTopupModal();
+    return;
+  }
+
+  if (typeof mzBalance !== 'undefined') {
+    mzBalance -= 2000;
+    if (typeof updateMzWalletUI === 'function') updateMzWalletUI();
+  }
+
+  const author = (window.steamUser && window.steamUser.name) ? window.steamUser.name : 'Тоглогч';
+  const reqs = getPendingSponsorRequests();
+  reqs.unshift({
+    id: 'req_' + Date.now(),
+    brand: brand.toUpperCase(),
+    title,
+    desc,
+    mediaUrl,
+    author,
+    time: new Date().toLocaleTimeString('mn-MN', { hour: '2-digit', minute: '2-digit' })
+  });
+  savePendingSponsorRequests(reqs);
+  renderOwnerPendingAds();
+
+  if (typeof closeAdBookingModal === 'function') closeAdBookingModal();
+  if (typeof showToast === 'function') {
+    showToast('gold', '📩', 'Сурталчилгааны хүсэлт илгээгдлээ!', `${brand} — Owner шалгаад "✅ Зөвшөөрөх" дармагц Live дэлгэц дээр гарна.`, 4500);
+  }
+};
+
+// Wrap syncOwnerPanelUI so banner input & pending ads list stay in sync whenever Owner Panel opens
+const _origSyncOwnerPanelUI = window.syncOwnerPanelUI;
+window.syncOwnerPanelUI = function() {
+  if (typeof _origSyncOwnerPanelUI === 'function') _origSyncOwnerPanelUI();
+  const cfg = getOwnerConfig();
+  const bInp = document.getElementById('ownerBannerInput');
+  if (bInp) bInp.value = cfg.bannerText || '';
+  renderOwnerPendingAds();
+};
+
+window.addEventListener('DOMContentLoaded', () => {
+  // Restore approved sponsor ads into Live Arena
+  try {
+    const approved = JSON.parse(localStorage.getItem(MZ_APPROVED_ADS_KEY) || '[]');
+    if (Array.isArray(approved) && approved.length && typeof ARENA_SPONSORS !== 'undefined') {
+      approved.slice().reverse().forEach(ad => {
+        if (!ARENA_SPONSORS.some(x => x.brand === ad.brand && x.title === ad.title)) {
+          ARENA_SPONSORS.unshift(ad);
+        }
+      });
+    }
+  } catch (e) {}
+
+  renderGlobalOwnerBanner();
+  renderOwnerPendingAds();
+});
