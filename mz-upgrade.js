@@ -2954,13 +2954,40 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ===================== 13. MOBILE APP UX & PERFORMANCE AUTO-OPTIMIZER =====================
+// ===================== 13. MOBILE APP UX, RIGHT SLIDE DRAWER & PERFORMANCE OPTIMIZER =====================
+function openMobileDrawer() {
+  document.getElementById('mobileDrawerBackdrop')?.classList.add('open');
+  document.getElementById('mobileSideDrawer')?.classList.add('open');
+  document.querySelectorAll('#mobileSideDrawer .mob-drawer-item').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.page === currentPageId);
+  });
+}
+
+function closeMobileDrawer() {
+  document.getElementById('mobileDrawerBackdrop')?.classList.remove('open');
+  document.getElementById('mobileSideDrawer')?.classList.remove('open');
+}
+
+function mobileDrawerGo(pageId) {
+  closeMobileDrawer();
+  navigatePage(pageId);
+}
+
+// Override toggleNav so clicking ☰ opens the clean Right Slide-In Drawer instead of overlapping navbar links
+window.toggleNav = function() {
+  const drawer = document.getElementById('mobileSideDrawer');
+  if (drawer) {
+    if (drawer.classList.contains('open')) closeMobileDrawer();
+    else openMobileDrawer();
+  }
+};
+
 window.addEventListener('DOMContentLoaded', () => {
   const isMobileScreen = window.innerWidth <= 860 || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
   if (!isMobileScreen) return;
 
-  // 1. Hide Weather/Chicken HUD completely on phones
-  const hud = document.getElementById('chickenHuntHud');
+  // 1. Hide Weather/Chicken HUD completely on phones (exact ID: cs2HuntHud)
+  const hud = document.getElementById('cs2HuntHud');
   if (hud) hud.style.display = 'none';
 
   // 2. Start Live Chat collapsed (minimized) on phones so it never blocks the screen on load

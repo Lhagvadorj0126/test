@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=20261127b" />
+  <link rel="stylesheet" href="style.css?v=20261127c" />
 </head>
 <body>
 
@@ -1594,6 +1594,63 @@
   </div>
 </footer>
 
+<!-- ===== MOBILE RIGHT SLIDE-IN SIDE DRAWER (CLEAN FULL-HEIGHT MENU) ===== -->
+<div class="mob-drawer-backdrop" id="mobileDrawerBackdrop" onclick="closeMobileDrawer()"></div>
+<aside class="mob-side-drawer" id="mobileSideDrawer" aria-label="Бүх хуудсууд">
+  <div class="mob-drawer-header">
+    <div class="mob-drawer-brand">
+      <span class="mob-drawer-logo">MZ</span>
+      <div>
+        <strong>THE MONGOLZ CS2</strong>
+        <span>Бүх цэс & Хуудсууд</span>
+      </div>
+    </div>
+    <button type="button" class="mob-drawer-close" onclick="closeMobileDrawer()" aria-label="Хаах">✕</button>
+  </div>
+  <div class="mob-drawer-links">
+    <button type="button" class="mob-drawer-item" data-page="home" onclick="mobileDrawerGo('home')">
+      <span class="mdi-ico">🏠</span>
+      <span class="mdi-txt"><strong>Нүүр хуудас</strong><small>Ерөнхий мэдээлэл & Статистик</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="arena" onclick="mobileDrawerGo('arena')">
+      <span class="mdi-ico">📺</span>
+      <span class="mdi-txt"><strong>Live Arena</strong><small>3D POV & 2D Live Map Radar</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="servers" onclick="mobileDrawerGo('servers')">
+      <span class="mdi-ico">🖥️</span>
+      <span class="mdi-txt"><strong>Серверүүд (45)</strong><small>Public, DM, KZ болон 40x 5v5</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="clanwar" onclick="mobileDrawerGo('clanwar')">
+      <span class="mdi-ico">⚔️</span>
+      <span class="mdi-txt"><strong>Clan War Arena</strong><small>Мапын Эзэд, Map Veto, Цом, LFT</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="skinchanger" onclick="mobileDrawerGo('skinchanger')">
+      <span class="mdi-ico">🎨</span>
+      <span class="mdi-txt"><strong>Skin Changer (3D)</strong><small>Бүх скин, 19 хутга, 67+ Player Model</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="cases" onclick="mobileDrawerGo('cases')">
+      <span class="mdi-ico">📦</span>
+      <span class="mdi-txt"><strong>Case Opening</strong><small>50k ELO Free Case & Elite Кейс</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="shop" onclick="mobileDrawerGo('shop')">
+      <span class="mdi-ico">🛒</span>
+      <span class="mdi-txt"><strong>VIP & Admin Дэлгүүр</strong><small>VIP, VIP+, Mod, Admin, Overlord</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="leaderboard" onclick="mobileDrawerGo('leaderboard')">
+      <span class="mdi-ico">🏆</span>
+      <span class="mdi-txt"><strong>Top 15 Чансаа</strong><small>Шилдэг тоглогчид (Kill, HS, AWP)</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="community" onclick="mobileDrawerGo('community')">
+      <span class="mdi-ico">🗣️</span>
+      <span class="mdi-txt"><strong>Community</strong><small>Пост, зарлал, хэлэлцүүлэг</small></span>
+    </button>
+    <button type="button" class="mob-drawer-item" data-page="banlist" onclick="mobileDrawerGo('banlist')">
+      <span class="mdi-ico">🛡️</span>
+      <span class="mdi-txt"><strong>Banlist & FACEIT</strong><small>Шалгах & Профайл харах</small></span>
+    </button>
+  </div>
+</aside>
+
 <!-- ===== MOBILE APP BOTTOM NAVIGATION BAR (SHOWN ON PHONES ONLY) ===== -->
 <nav class="mobile-bottom-nav" id="mobileBottomNav" aria-label="Mobile Navigation">
   <button type="button" class="mbn-item active" data-page="home" onclick="navigatePage('home')">
@@ -1618,7 +1675,7 @@
   </button>
 </nav>
 
-<script src="app.js?v=20261127b"></script>
-<script src="mz-upgrade.js?v=20261127b"></script>
+<script src="app.js?v=20261127c"></script>
+<script src="mz-upgrade.js?v=20261127c"></script>
 </body>
 </html>
