@@ -7315,18 +7315,52 @@ body.cs2-crosshair-active .sc-weapon-item {
 
   .nav-inner {
     height: 60px !important;
-    padding: 0 10px !important;
+    padding: 0 8px !important;
+    gap: 5px !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .nav-toggle {
+    display: flex !important;
+    flex-shrink: 0 !important;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 9px;
+    background: rgba(240, 168, 0, 0.16) !important;
+    border: 1px solid rgba(240, 168, 0, 0.55) !important;
+    padding: 6px !important;
+    gap: 4px !important;
+    z-index: 1001;
+  }
+
+  .nav-toggle span {
+    width: 20px !important;
+    height: 2px !important;
+    background: #fde047 !important;
+  }
+
+  .nav-logo {
     gap: 6px !important;
+    min-width: 0;
+    flex-shrink: 1;
   }
 
   .logo-emblem svg {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
 
   .logo-main {
-    font-size: 0.82rem !important;
-    letter-spacing: 0.02em !important;
+    font-size: 0.74rem !important;
+    letter-spacing: 0.01em !important;
+    white-space: nowrap;
   }
 
   .logo-sub {
@@ -7334,8 +7368,9 @@ body.cs2-crosshair-active .sc-weapon-item {
   }
 
   .nav-actions {
-    gap: 5px !important;
+    gap: 4px !important;
     margin-left: auto;
+    flex-shrink: 0;
   }
 
   .user-rank-pill {
@@ -7687,5 +7722,11 @@ body.cs2-crosshair-active .sc-weapon-item {
     max-height: calc(100vh - 155px) !important;
     overflow-y: auto !important;
     padding: 16px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  .logo-text {
+    display: none !important;
   }
 }
